@@ -1,0 +1,100 @@
+h4 {
+  margin-top: 25px;
+}
+
+html, body{
+  margin: 0;
+  padding: 0;
+
+  min-width: 100%;
+  width: 100%;
+  max-width: 100%;
+
+  min-height: 100%;
+  height: 100%;
+  max-height: 100%;
+}
+
+h4 {
+  margin-top: 25px;
+}
+
+html, body{
+  margin: 0;
+  padding: 0;
+
+  min-width: 100%;
+  width: 100%;
+  max-width: 100%;
+
+  min-height: 100%;
+  height: 100%;
+  max-height: 100%;
+}
+
+.mainpage {
+  height: 100%;
+}
+
+.lead{
+  font-size: 16px;
+}
+
+.flex-column{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.flex-row{
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.canvas {
+  flex-grow: 6;
+  order: 1;
+  background-color: blue;
+
+}
+.controls {
+  flex-grow: 1;
+  padding: 20px 20px 20px 20px;
+  /*margin: 20px 20px 20px 20px;*/
+  max-width: 175px;
+  order: 2;
+  background-color: green;
+}
+
+.controls .btn {
+  margin: 0 0 10px 0;
+  padding-right: 0px;
+  padding-left: 0px;
+}
+
+.editor{
+  margin: 20px 0 40px 0;
+  flex-grow: 1;
+  flex-direction: row;
+  background-color: red;
+}
+
+.editor{
+  margin: 20px 0 40px 0;
+  flex-grow: 1;
+  flex-direction: row;
+  background-color: red;
+}
+
+.testbox{
+  margin:auto;
+  width: 500px;
+  height: 500px;
+  background-color: yellow;
+}
+
+hr {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
