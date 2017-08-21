@@ -39,6 +39,7 @@
 
                 <li>
                     <button class="button" id="load-button">Load Image</button>
+                    <input type="file" id="image-input" name="image-input" style="display: none" />
                 </li>
                 <li>
                     <button class="button" id="save-button">Save Image</button>
@@ -56,25 +57,29 @@
         </div>
         <!-- /#sidebar-wrapper -->
 
-
+        <div id="canvas-wrapper">
+          <canvas id="editor"></canvas>
+        </div>
 
         <!-- Page Content -->
-        <div id="page-content-wrapper">
-            <div class="container-fluid">
-              <div id="about">
+
+
+        <div id="about">
+          <div id="page-content-wrapper">
+              <div class="container-fluid">
                 <h1>Header</h1>
                 <p>Pabst lo-fi franzen, sustainable et vexillologist in selvage artisan palo santo lomo whatever elit skateboard art party. Actually banjo knausgaard, ipsum butcher fashion axe offal umami. Everyday carry enamel pin organic commodo chillwave hexagon XOXO helvetica artisan coloring book velit cray. Affogato lorem wolf lyft, do bitters irure listicle chambray pug. Dreamcatcher hammock ennui disrupt normcore organic chicharrones enim dolore cray excepteur fam. Ennui trust fund kinfolk, eiusmod scenester cillum tumeric sunt banjo semiotics mustache. Minim officia photo booth kinfolk cray coloring book chillwave four dollar toast man braid. Listicle iceland celiac meggings incididunt poutine deserunt ullamco edison bulb vegan flexitarian. 3 wolf moon chillwave shoreditch mustache chicharrones copper mug. Unicorn kale chips vaporware yr. Semiotics chillwave normcore street art duis, wayfarers crucifix ad labore dolore id freegan. Waistcoat brunch literally tousled velit chambray. Culpa humblebrag pabst iceland quis paleo. Laboris kale chips literally, meh man bun dolore letterpress meditation shabby chic brunch.</p>
               </div>
             </div>
+          </div>
+          <!-- /#page-content-wrapper -->
         </div>
-        <!-- /#page-content-wrapper -->
 
     </div>
     <!-- /#wrapper -->
 
     <!-- Bootstrap core JavaScript -->
     <script src="js/jquery-3.2.1.min.js"></script>
-    <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/main.js"></script>
 

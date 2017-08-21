@@ -6,6 +6,7 @@
 
 body {
     overflow-x: hidden;
+    height: 100vh;
 }
 
 hr {
@@ -13,8 +14,13 @@ hr {
   border-color: rgba(255,255,255,.25);
 }
 
+#editor {
+  /*width: 100%;*/
+  /*height: 100%;*/
+}
+
 #about {
-  /*display:none;*/
+  display:none;
 }
 
 #wrapper {
@@ -23,6 +29,7 @@ hr {
     -o-transition: all 0.5s ease;
     transition: all 0.5s ease;
     padding-left: 250px;
+    height: 100%;
 }
 
 #sidebar-wrapper {
@@ -41,6 +48,11 @@ hr {
 
 #wrapper.toggled #sidebar-wrapper {
     width: 250px;
+}
+
+#canvas-wrapper {
+    width: 100%;
+    height: 100%;
 }
 
 #page-content-wrapper {
