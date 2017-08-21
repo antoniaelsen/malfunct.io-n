@@ -1,8 +1,14 @@
 # Design Document
 
 ### About
-[Glitch] is a simple webapp tool to perform pixelsorting and other glitch-art operations on user imported images.  
-It is a personal project to experiment with webdesign, html / css, JS.
+`pixelsort` is a simple webapp tool to perform pixelsorting and other glitch-art operations on user imported images.  
+It is a personal project to experiment with webdesign, html / css, and JS.
+
+### Author
+Antonia Elsen  
+aelsen @ github
+
+### Design
 
 #### Requirements
 - Canvas for editing images
@@ -35,12 +41,3 @@ It is a personal project to experiment with webdesign, html / css, JS.
 #### Layout
 - Canvas (main component)
 - Options / configuration (expandable menu)
-
-
-### Author
-Antonia Elsen  
-aelsen @ github
-
-
-### Reference and Inspiration
-http://negomi.github.io/react-burger-menu/
