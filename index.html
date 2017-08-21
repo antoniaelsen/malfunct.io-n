@@ -1,51 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
+
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <!-- <link rel="icon" href="images/favicon.ico"> -->
 
-    <title></title>
+    <title>Simple Sidebar - Start Bootstrap Template</title>
 
+    <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/main.css" rel="stylesheet">
 
+    <!-- Custom styles for this template -->
+    <link href="css/simple-sidebar.css" rel="stylesheet">
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-  </head>
+</head>
 
-  <body>
-    <div class="mainpage container flex-column">
+<body>
 
+    <div id="wrapper">
 
-      <div class="page-header">
-        <h1>PIXEL SORT</h1>
-        <p class="lead">by Antonia Elsen</p>
-      </div>
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <a href="#">
+                        Pixel Sorting
+                    </a>
+                </li>
 
-      <div class="editor flex-row">
-        <div class="canvas flex-row">
-          <div class="testbox">
-          </div>
+                <hr>
+                <li>
+                    <a href="#">About / Editor</a>
+                </li>
+                <hr>
+
+                <li>
+                    <button class="button" id="load-button">Load Image</button>
+                </li>
+                <li>
+                    <button class="button" id="save-button">Save Image</button>
+                </li>
+                <li>
+                    <button class="button" id="clear-button">Reset Image</button>
+                </li>
+
+                <hr>
+
+                <li>
+                    <a href="#">Dropdown</a>
+                </li>
+            </ul>
         </div>
-        <div class="controls flex-column">
-          <button type="button" class="btn btn-default">Load Image</button>
-          <button type="button" class="btn btn-default disabled">Save Image</button>
+        <!-- /#sidebar-wrapper -->
 
+
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+              <div id="about">
+                <h1>Header</h1>
+                <p>Pabst lo-fi franzen, sustainable et vexillologist in selvage artisan palo santo lomo whatever elit skateboard art party. Actually banjo knausgaard, ipsum butcher fashion axe offal umami. Everyday carry enamel pin organic commodo chillwave hexagon XOXO helvetica artisan coloring book velit cray. Affogato lorem wolf lyft, do bitters irure listicle chambray pug. Dreamcatcher hammock ennui disrupt normcore organic chicharrones enim dolore cray excepteur fam. Ennui trust fund kinfolk, eiusmod scenester cillum tumeric sunt banjo semiotics mustache. Minim officia photo booth kinfolk cray coloring book chillwave four dollar toast man braid. Listicle iceland celiac meggings incididunt poutine deserunt ullamco edison bulb vegan flexitarian. 3 wolf moon chillwave shoreditch mustache chicharrones copper mug. Unicorn kale chips vaporware yr. Semiotics chillwave normcore street art duis, wayfarers crucifix ad labore dolore id freegan. Waistcoat brunch literally tousled velit chambray. Culpa humblebrag pabst iceland quis paleo. Laboris kale chips literally, meh man bun dolore letterpress meditation shabby chic brunch.</p>
+              </div>
+            </div>
         </div>
-      </div>
+        <!-- /#page-content-wrapper -->
 
-    </div> <!-- /container -->
+    </div>
+    <!-- /#wrapper -->
 
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <!-- <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script> -->
-  </body>
+    <!-- Bootstrap core JavaScript -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/main.js"></script>
+
+
+</body>
+
 </html>
