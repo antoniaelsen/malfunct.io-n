@@ -11,10 +11,10 @@
     <title>MALFUNCT.IO/N</title>
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=VT323|Varela" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500|Orbitron:700" rel="stylesheet">
 
     <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
 
     <!-- Custom styles for this template -->
     <link href="css/main.css" rel="stylesheet">
@@ -22,71 +22,102 @@
 </head>
 
 <body>
-
-    <div id="wrapper">
-
-        <!-- Sidebar -->
-        <div id="sidebar-wrapper">
-            <ul class="sidebar-nav">
-                <li class="sidebar-brand">
-                    <a href="#">
-                        MALFUNCT.IO/N
-                    </a>
-                </li>
-
-                <hr>
+    <!-- main container -->
+    <div class="container-fluid h-100">
+    <div class="row h-100">
+        <!-- nav -->
+        <nav class="sidebar col-md-2 hidden-sm-down fixed-top">
+            <ul class="nav flex-column justify-content-center">
                 <li>
-                    <a href="#">ABOUT</a>
+                    <p class="text-center brand" href="#">MALFUNCT.IO/N</p>
                 </li>
                 <hr>
-
                 <li>
-                    <button class="button" id="load-button">LOAD IMAGE</button>
-                    <input type="file" id="image-input" name="image-input" style="display: none" />
-                </li>
-                <li>
-                    <button class="button" id="save-button">SAVE IMAGE</button>
-                </li>
-                <li>
-                    <button class="button" id="clear-button">CLEAR IMAGE</button>
+                    <a class="nav-link text-center" href="#">ABOUT</a>
                 </li>
 
                 <hr>
 
-                <li>
-                    <a href="#">DROPDOWN</a>
-                </li>
+                <!-- image options -->
+                <ul id="image-options" class="nav flex-column flex-sm-col ">
+                    <li class="flex-sm-fill text-sm-center nav-item">
+                        <button class="btn btn-block" id="load-button">LOAD IMAGE</button>
+                        <input type="file" id="image-input" name="image-input" style="display: none" />                        
+                    </li>
+                    <li class="flex-sm-fill text-sm-center nav-item">
+                        <button class="btn btn-block" id="save-button" disabled>SAVE IMAGE</button>
+                    </li>
+                    <li class="flex-sm-fill text-sm-center nav-item">
+                        <button class="btn btn-block" id="clear-button" disabled>CLEAR IMAGE</button>
+                    </li>
+                </ul>
+
+                <hr>
+
+                <!-- filter options -->
+                <ul id="filter-options" class="nav flex-column flex-sm-col">
+                    <li class="flex-sm-fill text-sm-center nav-item">
+                        <div class="dropdown">
+                            <button class="btn btn-block dropdown-toggle" type="button" id="dropdownMode" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                CRITERIA
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMode">
+                                <a class="dropdown-item" href="#">LUMINOSITY</a>
+                                <a class="dropdown-item" href="#">HUE</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="flex-sm-fill text-sm-center nav-item">
+                        <div class="dropdown">
+                            <button class="btn btn-block dropdown-toggle" type="button" id="dropdownCanvasDir" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                SORTING
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownCanvasDir">
+                                <a class="dropdown-item" href="#">Vertical</a>
+                                <a class="dropdown-item" href="#">Horizontal</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="flex-sm-fill text-sm-center nav-item">
+                        <div class="dropdown">
+                            <button class="btn btn-block dropdown-toggle" type="button" id="dropdownEffectDir" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                SORTING
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownEffectDir">
+                                <a class="dropdown-item" href="#">Ascending</a>
+                                <a class="dropdown-item" href="#">Descending</a>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="flex-sm-fill text-sm-center nav-item">
+                        <button class="btn btn-block" id="clear-button">SLIDER</button>
+                    </li>
+                </ul>
             </ul>
-        </div>
-        <!-- /#sidebar-wrapper -->
+        </nav>
+        <!-- end nav -->
 
-        <div id="canvas-wrapper">
-          <canvas id="editor"></canvas>
-        </div>
+        <main id="canvas-wrapper" class="container-fluid col-md-10 offset-md-2 h-100 ">
+            <div class="row align-items-center h-100">
+                <div class="col">
+                </div>
+                <div class="col col-md-auto">
+                    <canvas id="editor"></canvas>
+                </div>
+                <div class="col">
+                </div>
+            </div> <!-- end row -->
+        </main>
 
-        <!-- Page Content -->
-
-
-        <div id="about">
-          <div id="page-content-wrapper">
-              <div class="container-fluid">
-                <h1>Header</h1>
-                <p>Pabst lo-fi franzen, sustainable et vexillologist in selvage artisan palo santo lomo whatever elit skateboard art party. Actually banjo knausgaard, ipsum butcher fashion axe offal umami. Everyday carry enamel pin organic commodo chillwave hexagon XOXO helvetica artisan coloring book velit cray. Affogato lorem wolf lyft, do bitters irure listicle chambray pug. Dreamcatcher hammock ennui disrupt normcore organic chicharrones enim dolore cray excepteur fam. Ennui trust fund kinfolk, eiusmod scenester cillum tumeric sunt banjo semiotics mustache. Minim officia photo booth kinfolk cray coloring book chillwave four dollar toast man braid. Listicle iceland celiac meggings incididunt poutine deserunt ullamco edison bulb vegan flexitarian. 3 wolf moon chillwave shoreditch mustache chicharrones copper mug. Unicorn kale chips vaporware yr. Semiotics chillwave normcore street art duis, wayfarers crucifix ad labore dolore id freegan. Waistcoat brunch literally tousled velit chambray. Culpa humblebrag pabst iceland quis paleo. Laboris kale chips literally, meh man bun dolore letterpress meditation shabby chic brunch.</p>
-              </div>
-            </div>
-          </div>
-          <!-- /#page-content-wrapper -->
-        </div>
-
-    </div>
-    <!-- /#wrapper -->
-
-    <!-- Bootstrap core JavaScript -->
-    <script src="js/jquery-3.2.1.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/main.js"></script>
-
+    </div> <!-- row -->
+    </div> <!-- end container -->
 
 </body>
+
+<!-- Bootstrap core JavaScript -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+<script src="js/main.js"></script>
 
 </html>

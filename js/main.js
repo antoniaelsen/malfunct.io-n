@@ -2,7 +2,7 @@ var imageLoaded = false;
 
 var canvas_wrapper = document.getElementById('canvas-wrapper');
 var canvas = document.getElementById('editor');
-var ctx = canvas.getContext('2d');
+var ctx = canvas.getContext("2d");
 
 var canvas_img = new Image();
 
@@ -12,6 +12,10 @@ document.getElementById("clear-button").disabled = !imageLoaded;
 document.getElementById("load-button").addEventListener("click", handleButtonLoad);
 document.getElementById("clear-button").addEventListener("click", handleButtonClear);
 document.getElementById("image-input").addEventListener("change", handleImageInput);
+
+$(document).ready(function() {
+  $(".dropdown-toggle").dropdown();
+});
 
 function handleButtonLoad() {
   document.getElementById('image-input').click();
