@@ -1,13 +1,21 @@
-var imageLoaded = false;
+/* 
+ * main.js
+*/
 
+// State vars
+var select_mode = "LUMINOSITY";
+var select_orientation = "VERTICAL";
+var select_sort_order = "DESCENDING";
+var image_loaded = false;
+
+// Canvas
 var canvas_wrapper = document.getElementById('canvas-wrapper');
 var canvas = document.getElementById('editor');
 var ctx = canvas.getContext("2d");
-
 var canvas_img = new Image();
 
-document.getElementById("save-button").disabled = !imageLoaded;
-document.getElementById("clear-button").disabled = !imageLoaded;
+document.getElementById("save-button").disabled = !image_loaded;
+document.getElementById("clear-button").disabled = !image_loaded;
 
 document.getElementById("load-button").addEventListener("click", handleButtonLoad);
 document.getElementById("clear-button").addEventListener("click", handleButtonClear);
@@ -23,14 +31,18 @@ function handleButtonLoad() {
 
 function handleButtonClear() {
   // TODO(aelsen): potentially add callback / listener to toggle buttons
-  imageLoaded = false;
-  toggleImageButtons(!imageLoaded);
+  image_loaded = false;
+  toggleImageButtons(!image_loaded);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function toggleImageButtons(state){
   document.getElementById("save-button").disabled = state;
   document.getElementById("clear-button").disabled = state;
+}
+
+function handleDropdownItemSelect(e){
+  // Switch dropdown button text to selection
 }
 
 function handleImageInput(e){
@@ -47,8 +59,8 @@ function handleImageInput(e){
       redrawCanvas();
     }
 
-    imageLoaded = true;
-    toggleImageButtons(!imageLoaded)
+    image_loaded = true;
+    toggleImageButtons(!image_loaded)
   }
 }
 

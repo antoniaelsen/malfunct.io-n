@@ -1,24 +1,8 @@
-/*!
- * Start Bootstrap - Simple Sidebar (http://startbootstrap.com/template-overviews/simple-sidebar)
- * Copyright 2013-2017 Start Bootstrap
- * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-simple-sidebar/blob/master/LICENSE)
- */
-
-/* * {
-    border-radius: 0 !important;
-    -webkit-border-radius: 0 !important;
-    -moz-border-radius: 0 !important;
-    border-radius: 0 !important;
-} */
-
-a, .btn, .custom-select {
+a, p, label, .btn, .custom-select {
     font-family: 'Montserrat', sans-serif;
     font-size: 12px;
     font-weight: 500;
     letter-spacing: 3px;
-}
-
-a {
     color: #E4844A;
 }
 
@@ -29,8 +13,9 @@ body {
 }
 
 hr {
-  /* border-top: 8px solid; */
-  border-color: #e8bf56;
+  border-top: 2px solid;
+  border-color: #91204D;
+  margin: 5px 0px 5px 0px;
 }
 
 /*  bootstrap overrides */
@@ -38,7 +23,7 @@ hr {
 .brand {
     color: #E2F7CE;
     font-family: 'Orbitron', sans-serif;
-    margin: 50px 0px 50px 0px;
+    margin: 30px 0px 30px 0px;
 }
 
 .dropdown-item {
@@ -55,6 +40,10 @@ hr {
 
 .nav-item {
     margin: 5px 20px 5px 20px;
+}
+
+.nav-item.heading {
+    margin-top: 10px;
 }
 
 .nav-link {
@@ -84,18 +73,50 @@ hr {
 .sidebar .btn:enabled:hover {
     color: white;
     background-color: #E4844A;
+    border-radius: .25rem;
+}
+
+.sidebar .col-form-label {
+    color: #E4844A;
+    font-weight: 500;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background-color: transparent;
+}
+
+.sidebar .custom-select {
+    background-color: #91204D;
+    color: #E8BF56;
+    font-weight: 500;
+    
+    padding-top: 12px;
+    padding-bottom: 12px;
+    width: 100%;
+    height: 100%;
+    border: 1px solid transparent;
+}
+
+.sidebar .custom-select:hover {
+    color: white;
+    background-color: #E4844A;
+}
+
+.sidebar .custom-form {
+    background-color: #91204D;
+    color: #E8BF56;
+    font-weight: 500;
+    text-align: right;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    padding-left: 12px;
+    border: 0px transparent;
+    width: 100%;
+    height: 100%;
     border: 1px solid transparent;
     border-radius: .25rem;
 }
 
-.sidebar .custom-select {
-    color: #E8BF56;
-    font-weight: 500;
-    /* padding: 12px 0px 12px 0px; */
-    background-color: #91204D;
-    border: 0px transparent;
-    width: 100%;
-}
+
 
 .sidebar .nav{
     padding: 10px 0px 10px 0px;

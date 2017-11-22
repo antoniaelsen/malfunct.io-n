@@ -56,6 +56,9 @@
 
                 <!-- filter options -->
                 <ul id="filter-options" class="nav flex-column flex-sm-col">
+                    <li>
+                        <p class="nav-item heading">SORTING</p>
+                    </li>
                     <li class="flex-sm-fill text-sm-center nav-item">
                         <select class="custom-select" id="selectMode">
                             <option>LUMINOSITY</option>
@@ -64,7 +67,7 @@
                         </select>
                     </li>
                     <li class="flex-sm-fill text-sm-center nav-item">
-                        <select class="custom-select" id="selectCanvasSortDir">
+                        <select class="custom-select" id="selectOrientation">
                             <option>VERTICAL</option>
                             <option>HORIZONTAL</option>
                         </select>
@@ -75,8 +78,25 @@
                             <option>ASCENDING</option>
                         </select>
                     </li>
+
+                    <li>
+                        <p class="nav-item heading">THRESHOLDS</p>
+                    </li>
                     <li class="flex-sm-fill text-sm-center nav-item">
-                        <button class="btn btn-block" id="clear-button">SLIDER</button>
+                        <div class="row">
+                            <label for="threshold-max" class="col-sm-3 col-form-label">MAX</label>
+                            <div class="col-sm-9">
+                                <input type="number" class="custom-form" id="threshold-max" placeholder="100">
+                            </div>
+                        </div>
+                    </li>
+                    <li class="flex-sm-fill text-sm-center nav-item">
+                        <div class="row">
+                            <label for="threshold-min" class="col-sm-3 col-form-label">MIN</label>
+                            <div class="col-sm-9">
+                                <input type="number" class="custom-form" id="threshold-min" placeholder="0">
+                            </div>
+                        </div>
                     </li>
                 </ul>
             </ul>
