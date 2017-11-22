@@ -28,7 +28,6 @@ function handleButtonClear() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-
 function toggleImageButtons(state){
   document.getElementById("save-button").disabled = state;
   document.getElementById("clear-button").disabled = state;
@@ -41,32 +40,25 @@ function handleImageInput(e){
   reader.onload = function(event){
     var img = new Image();
     img.src = event.target.result;
-
+    
     img.onload = function(){
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       canvas_img = img;
       redrawCanvas();
     }
 
     imageLoaded = true;
     toggleImageButtons(!imageLoaded)
-
   }
 }
 
 function redrawCanvas(){
-  console.log("redrawing canvas");
   var img = canvas_img;
   var cw = canvas_wrapper.offsetWidth;
   var ch = canvas_wrapper.offsetHeight;
 
-  console.log("s width: " + img.width +
-    " / s height: " + img.height);
-
   var scaling_factor =
     scaleWithAspect(img.width, img.height, cw, ch);
-
-  console.log("d width: " + img.width * scaling_factor +
-    " / d height: " + img.height * scaling_factor);
 
   resizeCanvas(img.width * scaling_factor, img.height * scaling_factor);
   ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0,
@@ -79,10 +71,15 @@ function resizeCanvas(width, height){
 }
 
 function scaleWithAspect(src_width, src_height, dest_width, dest_height){
-    var scale_factor = 1;
-    scale_factor = Math.min((dest_width / src_height), (dest_height / src_height));
-    console.log("Scale factor:", scale_factor);
-    return scale_factor;
+  // Calculates a scaling factor to shrink the image.
+  //  The factor is based on the orientation which
+  //  is closest to the desired (dest) size.
+  //  If the image is already smaller than the dest size, the factor is 1.
+    return scale_factor = Math.min(
+      Math.min(
+        (dest_width / src_width), 
+        (dest_height / src_height)), 
+      1);
 }
 
 var addEvent = function(object, type, callback) {
