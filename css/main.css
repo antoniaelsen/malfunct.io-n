@@ -35,9 +35,6 @@ hr {
 
 /*  bootstrap overrides */
 
-.wrapper {
-}
-
 .brand {
     color: #E2F7CE;
     font-family: 'Orbitron', sans-serif;
@@ -83,7 +80,7 @@ hr {
     background-color: #91204D;
 }
 
-.sidebar .btn:hover {
+.sidebar .btn:enabled:hover {
     color: white;
     background-color: #E4844A;
     border: 1px solid transparent;
