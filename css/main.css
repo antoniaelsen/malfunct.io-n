@@ -63,6 +63,12 @@ hr {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, .66);
 }
 
+@media (max-width: 575px) {
+    .sidebar {
+        display: none;
+    }
+}
+
 .sidebar .btn {
     color: #E8BF56;
     font-weight: 500;
@@ -115,8 +121,6 @@ hr {
     border: 1px solid transparent;
     border-radius: .25rem;
 }
-
-
 
 .sidebar .nav{
     padding: 10px 0px 10px 0px;

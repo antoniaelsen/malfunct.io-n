@@ -1,11 +1,9 @@
-/* 
- * main.js
-*/
-
 // State vars
 var select_mode = "LUMINOSITY";
 var select_orientation = "VERTICAL";
 var select_sort_order = "DESCENDING";
+var threshold_min = 0;
+var threshold_max = 0;
 var image_loaded = false;
 
 // Canvas
@@ -18,6 +16,7 @@ document.getElementById("save-button").disabled = !image_loaded;
 document.getElementById("clear-button").disabled = !image_loaded;
 
 document.getElementById("load-button").addEventListener("click", handleButtonLoad);
+document.getElementById("save-button").addEventListener("click", handleButtonSave);
 document.getElementById("clear-button").addEventListener("click", handleButtonClear);
 document.getElementById("image-input").addEventListener("change", handleImageInput);
 
@@ -26,6 +25,10 @@ $(document).ready(function() {
 });
 
 function handleButtonLoad() {
+  document.getElementById('image-input').click();
+}
+
+function handleButtonSave() {
   document.getElementById('image-input').click();
 }
 
