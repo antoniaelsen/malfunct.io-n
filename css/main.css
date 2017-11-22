@@ -76,6 +76,10 @@ hr {
     background-color: #91204D;
 }
 
+.sidebar .btn:focus {
+    box-shadow: none;
+}
+
 .sidebar .btn:enabled:hover {
     color: white;
     background-color: #E4844A;

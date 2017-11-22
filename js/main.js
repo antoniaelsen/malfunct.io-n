@@ -12,24 +12,42 @@ var canvas = document.getElementById('editor');
 var ctx = canvas.getContext("2d");
 var canvas_img = new Image();
 
-document.getElementById("save-button").disabled = !image_loaded;
-document.getElementById("clear-button").disabled = !image_loaded;
+$(".save-button").disabled = !image_loaded;
+$(".clear-button").disabled = !image_loaded;
 
-document.getElementById("load-button").addEventListener("click", handleButtonLoad);
-document.getElementById("save-button").addEventListener("click", handleButtonSave);
-document.getElementById("clear-button").addEventListener("click", handleButtonClear);
-document.getElementById("image-input").addEventListener("change", handleImageInput);
+$("#load-button").on("click", handleButtonLoad);
+$("#save-button").on("click", handleButtonSave);
+$("#clear-button").on("click", handleButtonClear);
+$("#image-input").on("change", handleImageInput);
+
+
+$("select").on("change", handleInput);
+$("input").on("change", handleInput);
 
 $(document).ready(function() {
   $(".dropdown-toggle").dropdown();
 });
 
 function handleButtonLoad() {
-  document.getElementById('image-input').click();
+  $('#image-input').trigger("click");
 }
 
 function handleButtonSave() {
-  document.getElementById('image-input').click();
+  // TODO(aelsen): This is hacky as fuuuuuuuuuuck
+  resizeCanvas(canvas_img.width, canvas_img.height);
+  ctx.drawImage(canvas_img, 
+    0, 0, canvas_img.width, canvas_img.height, 
+    0, 0, canvas_img.width, canvas_img.height);
+
+  var a  = document.createElement('a');
+  var canvas_href = canvas.toDataURL('image/png');
+  
+  a.href = canvas_href;
+  a.download = 'malfunction-output.png';
+
+  a.click();
+  a.remove();
+  redrawCanvas();
 }
 
 function handleButtonClear() {
@@ -39,12 +57,8 @@ function handleButtonClear() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-function toggleImageButtons(state){
-  document.getElementById("save-button").disabled = state;
-  document.getElementById("clear-button").disabled = state;
-}
-
-function handleDropdownItemSelect(e){
+function handleInput(e){
+  console.log(" Handle input. ")
   // Switch dropdown button text to selection
 }
 
@@ -59,14 +73,25 @@ function handleImageInput(e){
     img.onload = function(){
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       canvas_img = img;
-      redrawCanvas();
+      onImageLoad();
     }
-
-    image_loaded = true;
-    toggleImageButtons(!image_loaded)
   }
 }
 
+function onImageLoad(){
+  redrawCanvas();
+  image_loaded = true;
+  toggleImageButtons(!image_loaded)
+}
+
+function toggleImageButtons(state){
+  document.getElementById("save-button").disabled = state;
+  document.getElementById("clear-button").disabled = state;
+}
+
+
+
+// view
 function redrawCanvas(){
   var img = canvas_img;
   var cw = canvas_wrapper.offsetWidth;
@@ -80,11 +105,13 @@ function redrawCanvas(){
     img.width * scaling_factor, img.height * scaling_factor);
 }
 
+// view
 function resizeCanvas(width, height){
   canvas.width = width;
   canvas.height = height;
 }
 
+// helper
 function scaleWithAspect(src_width, src_height, dest_width, dest_height){
   // Calculates a scaling factor to shrink the image.
   //  The factor is based on the orientation which

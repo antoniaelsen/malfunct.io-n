@@ -42,10 +42,11 @@
                 <ul id="image-options" class="nav flex-column flex-sm-col ">
                     <li class="flex-sm-fill text-sm-center nav-item">
                         <button class="btn btn-block" id="load-button">LOAD IMAGE</button>
-                        <input type="file" id="image-input" name="image-input" style="display: none" />                        
+                        <input type="file" id="image-input" name="image-input" style="display: none"/>                        
                     </li>
                     <li class="flex-sm-fill text-sm-center nav-item">
-                        <button class="btn btn-block" id="save-button" disabled>SAVE IMAGE</button>
+                        <button class="btn btn-block" id="save-button" download="YourFileName.jpg" disabled>SAVE IMAGE</button>
+                        <a id="save-link" download="malfunction.png" style="display: none"></a>
                     </li>
                     <li class="flex-sm-fill text-sm-center nav-item">
                         <button class="btn btn-block" id="clear-button" disabled>CLEAR IMAGE</button>
@@ -86,7 +87,7 @@
                         <div class="row">
                             <label for="threshold-max" class="col-sm-3 col-form-label">MAX</label>
                             <div class="col-sm-9">
-                                <input type="number" class="custom-form" id="threshold-max" placeholder="100">
+                                <input type="number" class="custom-form" id="threshold-max" placeholder="255">
                             </div>
                         </div>
                     </li>
