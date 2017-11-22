@@ -47,7 +47,7 @@ function handleButtonSave() {
 
   a.click();
   a.remove();
-  redrawCanvas();
+  drawCanvasImage();
 }
 
 function handleButtonClear() {
@@ -79,7 +79,7 @@ function handleImageInput(e){
 }
 
 function onImageLoad(){
-  redrawCanvas();
+  drawCanvasImage();
   image_loaded = true;
   toggleImageButtons(!image_loaded)
 }
@@ -92,7 +92,7 @@ function toggleImageButtons(state){
 
 
 // view
-function redrawCanvas(){
+function drawCanvasImage() {
   var img = canvas_img;
   var cw = canvas_wrapper.offsetWidth;
   var ch = canvas_wrapper.offsetHeight;
@@ -103,6 +103,23 @@ function redrawCanvas(){
   resizeCanvas(img.width * scaling_factor, img.height * scaling_factor);
   ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0,
     img.width * scaling_factor, img.height * scaling_factor);
+
+  drawCanvasShadow();
+}
+
+function drawCanvasShadow() {
+  ctx.beginPath();
+  ctx.globalCompositeOperation='source-atop';
+  
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+  ctx.shadowBlur = 5;
+  ctx.shadowColor = 'rgba(0, 0, 0, .66)';
+  
+  ctx.rect(0, 0, canvas.width, canvas.height);
+  ctx.stroke();
+  
+  ctx.globalCompositeOperation='source-over';
 }
 
 // view
@@ -134,4 +151,4 @@ var addEvent = function(object, type, callback) {
         object["on"+type] = callback;
     }
 };
-addEvent(window, "resize", redrawCanvas);
+addEvent(window, "resize", drawCanvasImage);
