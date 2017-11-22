@@ -11,7 +11,7 @@
     border-radius: 0 !important;
 } */
 
-a, .btn {
+a, .btn, .custom-select {
     font-family: 'Montserrat', sans-serif;
     font-size: 12px;
     font-weight: 500;
@@ -71,6 +71,7 @@ hr {
     background: #452632;
     padding: 20px 0px 20px 0px;
     text-transform: uppercase;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, .66);
 }
 
 .sidebar .btn {
@@ -85,6 +86,15 @@ hr {
     background-color: #E4844A;
     border: 1px solid transparent;
     border-radius: .25rem;
+}
+
+.sidebar .custom-select {
+    color: #E8BF56;
+    font-weight: 500;
+    /* padding: 12px 0px 12px 0px; */
+    background-color: #91204D;
+    border: 0px transparent;
+    width: 100%;
 }
 
 .sidebar .nav{

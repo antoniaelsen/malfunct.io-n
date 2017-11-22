@@ -57,37 +57,23 @@
                 <!-- filter options -->
                 <ul id="filter-options" class="nav flex-column flex-sm-col">
                     <li class="flex-sm-fill text-sm-center nav-item">
-                        <div class="dropdown">
-                            <button class="btn btn-block dropdown-toggle" type="button" id="dropdownMode" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                CRITERIA
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMode">
-                                <a class="dropdown-item" href="#">LUMINOSITY</a>
-                                <a class="dropdown-item" href="#">HUE</a>
-                            </div>
-                        </div>
+                        <select class="custom-select" id="selectMode">
+                            <option>LUMINOSITY</option>
+                            <option>HUE</option>
+                            <option>SATURATION</option>
+                        </select>
                     </li>
                     <li class="flex-sm-fill text-sm-center nav-item">
-                        <div class="dropdown">
-                            <button class="btn btn-block dropdown-toggle" type="button" id="dropdownCanvasDir" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                SORTING
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownCanvasDir">
-                                <a class="dropdown-item" href="#">Vertical</a>
-                                <a class="dropdown-item" href="#">Horizontal</a>
-                            </div>
-                        </div>
+                        <select class="custom-select" id="selectCanvasSortDir">
+                            <option>VERTICAL</option>
+                            <option>HORIZONTAL</option>
+                        </select>
                     </li>
                     <li class="flex-sm-fill text-sm-center nav-item">
-                        <div class="dropdown">
-                            <button class="btn btn-block dropdown-toggle" type="button" id="dropdownEffectDir" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                SORTING
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownEffectDir">
-                                <a class="dropdown-item" href="#">Ascending</a>
-                                <a class="dropdown-item" href="#">Descending</a>
-                            </div>
-                        </div>
+                        <select class="custom-select" id="selectValueSortDir">
+                            <option>DESCENDING</option>
+                            <option>ASCENDING</option>
+                        </select>
                     </li>
                     <li class="flex-sm-fill text-sm-center nav-item">
                         <button class="btn btn-block" id="clear-button">SLIDER</button>
