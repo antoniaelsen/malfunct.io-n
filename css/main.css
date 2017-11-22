@@ -4,9 +4,19 @@
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-simple-sidebar/blob/master/LICENSE)
  */
 
+ * {
+    border-radius: 0 !important;
+    -webkit-border-radius: 0 !important;
+    -moz-border-radius: 0 !important;
+    border-radius: 0 !important;
+ }
+
 body {
     overflow-x: hidden;
     height: 100vh;
+    font-family: 'Varela', sans-serif;
+    letter-spacing: 4px;
+    background-color: #444;
 }
 
 hr {
@@ -69,10 +79,11 @@ hr {
 .button {
     border: none;
     color: white;
-    margin: 5px auto 5px auto;
+    margin: 10px auto 10px auto;
     /*padding: 15px 32px;*/
     text-align: center;
     text-decoration: none;
+    letter-spacing: inherit;
     display: inline-block;
 }
 

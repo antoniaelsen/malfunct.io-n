@@ -14,6 +14,7 @@ aelsen @ github
 - Canvas for editing images
 - Load an image into the canvas
 - Save an image from the canvas
+- Clear the canvas
 
 
 - Perform operations

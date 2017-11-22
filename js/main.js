@@ -14,12 +14,14 @@ document.getElementById("clear-button").addEventListener("click", handleButtonCl
 document.getElementById("image-input").addEventListener("change", handleImageInput);
 
 function handleButtonLoad() {
-    document.getElementById('image-input').click();
+  document.getElementById('image-input').click();
 }
 
 function handleButtonClear() {
-    imageLoaded = false;
-    toggleImageButtons(!imageLoaded);
+  // TODO(aelsen): potentially add callback / listener to toggle buttons
+  imageLoaded = false;
+  toggleImageButtons(!imageLoaded);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 
