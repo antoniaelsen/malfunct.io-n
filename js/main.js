@@ -1,6 +1,7 @@
-
+var base_img = new Image();
 var options = {
-  select_mode: 2, 
+  select_replace: "REPLACE",
+  select_sort_criteria: 2, 
   select_orientation: "VERTICAL", 
   select_sort_order: "DESCENDING", 
   select_theshold_dir: "DESCENDING", 
@@ -42,7 +43,7 @@ $("#selectMode").on("change", function(e) {
       mode = 2;
       break;
   }
-  options.select_mode = mode; 
+  options.select_sort_criteria = mode; 
 });
 
 $(".ctrl").on("change", handleInput);
@@ -52,7 +53,7 @@ $(document).ready(function() {
 });
 
 function compare(a, b) {
-  var i = options.select_mode;
+  var i = options.select_sort_criteria;
   if (a[i] === b[i]) {
       return 0;
   }
@@ -85,7 +86,7 @@ function threshold(pixels) {
   // Isolate values of the mode (H, S, or L)
   var mode_slice = pixels.map(
     function(v) {
-      return v[options.select_mode]; 
+      return v[options.select_sort_criteria]; 
     });
   // console.log(mode_slice);
 
@@ -104,7 +105,7 @@ function threshold(pixels) {
 
 function pixelsort(){
   console.log("Sorting image with the following options:");
-  console.log("   select_mode: " + options.select_mode);
+  console.log("   select_sort_criteria: " + options.select_sort_criteria);
   console.log("   select_sort_order: " + options.select_sort_order);
   console.log("   select_theshold_dir: " + options.select_theshold_dir);
   console.log("   threshold_lower: " + options.threshold_lower);
@@ -116,7 +117,6 @@ function pixelsort(){
 
     // Hax
     if (options.select_theshold_dir == "ASCENDING") { 
-      console.log("Reversing");
       column_pixels.reverse();
     }
 
@@ -173,6 +173,7 @@ function handleButtonSave() {
 
 function handleButtonClear() {
   // TODO(aelsen): potentially add callback / listener to toggle buttons
+  base_img = new Image();
   options.image_loaded = false;
   toggleImageButtons(!options.image_loaded);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -181,6 +182,7 @@ function handleButtonClear() {
 function handleInput(e){
   var id = e.target.id;
   console.log(" Handle input from " + id);
+  loadImage(base_img);
   pixelsort();
 }
 
@@ -191,9 +193,9 @@ function handleImageInput(e){
   reader.onload = function(event){
     var img = new Image();
     img.src = event.target.result;
-    
+    base_img = img;
+
     img.onload = function(){
-      console.log("img onload");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       loadImage(this);
       options.image_loaded = true;
@@ -213,7 +215,6 @@ function resizeCanvas(width, height){
 }
 
 function loadImage(img) {
-  console.log("loadImage");
   var cw = canvas_wrapper.offsetWidth;
   var ch = canvas_wrapper.offsetHeight;
 
