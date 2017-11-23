@@ -1,19 +1,21 @@
-// State vars
-var select_mode = "LUMINOSITY";
-var select_orientation = "VERTICAL";
-var select_sort_order = "DESCENDING";
-var threshold_min = 0;
-var threshold_max = 0;
-var image_loaded = false;
+
+var options = {
+  select_mode: 2, 
+  select_orientation: "VERTICAL", 
+  select_sort_order: "DESCENDING", 
+  select_theshold_dir: "DESCENDING", 
+  threshold_lower: 0,
+  threshold_upper: 1,
+  image_loaded: false
+ };
 
 // Canvas
 var canvas_wrapper = document.getElementById('canvas-wrapper');
 var canvas = document.getElementById('editor');
 var ctx = canvas.getContext("2d");
-var canvas_img = new Image();
 
-$(".save-button").disabled = !image_loaded;
-$(".clear-button").disabled = !image_loaded;
+$(".save-button").disabled = !options.image_loaded;
+$(".clear-button").disabled = !options.image_loaded;
 
 $("#load-button").on("click", handleButtonLoad);
 $("#save-button").on("click", handleButtonSave);
@@ -21,24 +23,144 @@ $("#clear-button").on("click", handleButtonClear);
 $("#image-input").on("change", handleImageInput);
 
 
-$("select").on("change", handleInput);
-$("input").on("change", handleInput);
+$("#inputThresholdLower").on("change", function(e) { options.threshold_lower = e.target.value; });
+$("#inputThresholdUpper").on("change", function(e) { options.threshold_upper= e.target.value; });
+
+$("#selectOrientation").on("change", function(e) { options.select_orientation= e.target.value; });
+$("#selectValueSortOrder").on("change", function(e) { options.select_sort_order = e.target.value; });
+$("#selectThresholdDir").on("change", function(e) { options.select_theshold_dir= e.target.value; });
+$("#selectMode").on("change", function(e) { 
+  var mode = 2;
+  switch(e.target.value) {
+    case "HUE":
+      mode = 0;
+      break;
+    case "SATURATION":
+      mode = 1;
+      break;
+    case "LUMINOSITY":
+      mode = 2;
+      break;
+  }
+  options.select_mode = mode; 
+});
+
+$(".ctrl").on("change", handleInput);
 
 $(document).ready(function() {
   $(".dropdown-toggle").dropdown();
 });
 
+function compare(a, b) {
+  var i = options.select_mode;
+  if (a[i] === b[i]) {
+      return 0;
+  }
+  else {
+    if (options.select_sort_order == "DESCENDING") {
+      return (a[i] < b[i]) ? -1 : 1;
+    } else if (options.select_sort_order == "ASCENDING") {
+      return (a[i] < b[i]) ? 1 : -1;
+    }
+  }
+}
+
+// TODO(aelsen): Works, but so clunky.
+function thresholdGreaterThan(array, threshold){
+  for (var i = 0; i < array.length; i++) {
+    if (array[i] >= threshold) {return i;}
+  }
+  return -1;
+}
+function thresholdLessThan(array, threshold){
+  for (var i = 0; i < array.length; i++) {
+    if (array[i] <= threshold) {return i;}
+  }
+  return -1;
+}
+
+function threshold(pixels) {
+  var bounds = [-1, -1];
+
+  // Isolate values of the mode (H, S, or L)
+  var mode_slice = pixels.map(
+    function(v) {
+      return v[options.select_mode]; 
+    });
+  // console.log(mode_slice);
+
+  if (options.select_sort_order == "DESCENDING") {
+    bounds[0] = thresholdLessThan(mode_slice, .2);
+    bounded_slice = mode_slice.slice(bounds[0], mode_slice.length);
+    bounds[1] = bounds[0] + thresholdGreaterThan(bounded_slice, options.threshold_upper);
+  } else if (options.select_sort_order == "ASCENDING") {
+    bounds[0] = thresholdGreaterThan(mode_slice, options.threshold_upper);
+    bounded_slice = mode_slice.slice(bounds[0], mode_slice.length);
+    bounds[1] = bounds[0] + thresholdLessThan(bounded_slice, options.threshold_lower);
+  }
+  // console.log(bounds);
+  return bounds;
+}
+
+function pixelsort(){
+  console.log("Sorting image with the following options:");
+  console.log("   select_mode: " + options.select_mode);
+  console.log("   select_sort_order: " + options.select_sort_order);
+  console.log("   select_theshold_dir: " + options.select_theshold_dir);
+  console.log("   threshold_lower: " + options.threshold_lower);
+  console.log("   threshold_upper: " + options.threshold_upper);
+  for (var c = 0; c < canvas.width; c++) {
+    var column_data = ctx.getImageData(c, 0, 1, canvas.height).data;
+    var column_pixels = data2array(column_data);
+    // console.log(column_pixels);
+
+    // Hax
+    if (options.select_theshold_dir == "ASCENDING") { 
+      console.log("Reversing");
+      column_pixels.reverse();
+    }
+
+    // Find bounds
+    var bounds = threshold(column_pixels);
+    var min = Math.min.apply(null, bounds);
+    // console.log("Bounds: " + bounds);
+    if (min < 0 || isNaN(min) || bounds[0] >= bounds[1]) {
+      // console.log("Could not find bounds for column " + c);
+      // console.log("Bounds: " + bounds);
+      continue;
+    }
+    
+
+    // Sort pixels within bounds
+    var slice_pixels = column_pixels.slice(bounds[0], bounds[1]);
+    // console.log(slice_pixels);
+    slice_pixels.sort(compare);
+    // console.log(slice_pixels);
+
+    // TODO(aelsen)
+    // if (options.select_theshold_dir == "ASCENDING") { 
+    //   console.log("Reversing");
+    //   column_pixels.reverse();
+    // }
+
+    // Write pixels
+    var slice_data = array2data(slice_pixels);
+    
+    var img = new ImageData(slice_data, 1, bounds[1] - bounds[0]);
+    ctx.putImageData(img, c, bounds[0]);
+  }
+  
+  console.log("done");
+}
+
+
+// GUI Callbacks
 function handleButtonLoad() {
   $('#image-input').trigger("click");
 }
 
 function handleButtonSave() {
   // TODO(aelsen): This is hacky as fuuuuuuuuuuck
-  resizeCanvas(canvas_img.width, canvas_img.height);
-  ctx.drawImage(canvas_img, 
-    0, 0, canvas_img.width, canvas_img.height, 
-    0, 0, canvas_img.width, canvas_img.height);
-
   var a  = document.createElement('a');
   var canvas_href = canvas.toDataURL('image/png');
   
@@ -47,19 +169,19 @@ function handleButtonSave() {
 
   a.click();
   a.remove();
-  drawCanvasImage();
 }
 
 function handleButtonClear() {
   // TODO(aelsen): potentially add callback / listener to toggle buttons
-  image_loaded = false;
-  toggleImageButtons(!image_loaded);
+  options.image_loaded = false;
+  toggleImageButtons(!options.image_loaded);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function handleInput(e){
-  console.log(" Handle input. ")
-  // Switch dropdown button text to selection
+  var id = e.target.id;
+  console.log(" Handle input from " + id);
+  pixelsort();
 }
 
 function handleImageInput(e){
@@ -71,17 +193,13 @@ function handleImageInput(e){
     img.src = event.target.result;
     
     img.onload = function(){
+      console.log("img onload");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      canvas_img = img;
-      onImageLoad();
+      loadImage(this);
+      options.image_loaded = true;
+      toggleImageButtons(!options.image_loaded)
     }
   }
-}
-
-function onImageLoad(){
-  drawCanvasImage();
-  image_loaded = true;
-  toggleImageButtons(!image_loaded)
 }
 
 function toggleImageButtons(state){
@@ -89,25 +207,26 @@ function toggleImageButtons(state){
   document.getElementById("clear-button").disabled = state;
 }
 
+function resizeCanvas(width, height){
+  canvas.width = width;
+  canvas.height = height;
+}
 
-
-// view
-function drawCanvasImage() {
-  var img = canvas_img;
+function loadImage(img) {
+  console.log("loadImage");
   var cw = canvas_wrapper.offsetWidth;
   var ch = canvas_wrapper.offsetHeight;
 
   var scaling_factor =
-    scaleWithAspect(img.width, img.height, cw, ch);
+    calculateScalingFactor(img.width, img.height, cw, ch);
 
   resizeCanvas(img.width * scaling_factor, img.height * scaling_factor);
   ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0,
     img.width * scaling_factor, img.height * scaling_factor);
-
-  drawCanvasShadow();
 }
 
-function drawCanvasShadow() {
+function drawBorderShadow() {
+  
   ctx.beginPath();
   ctx.globalCompositeOperation='source-atop';
   
@@ -122,14 +241,7 @@ function drawCanvasShadow() {
   ctx.globalCompositeOperation='source-over';
 }
 
-// view
-function resizeCanvas(width, height){
-  canvas.width = width;
-  canvas.height = height;
-}
-
-// helper
-function scaleWithAspect(src_width, src_height, dest_width, dest_height){
+function calculateScalingFactor(src_width, src_height, dest_width, dest_height){
   // Calculates a scaling factor to shrink the image.
   //  The factor is based on the orientation which
   //  is closest to the desired (dest) size.
@@ -151,4 +263,5 @@ var addEvent = function(object, type, callback) {
         object["on"+type] = callback;
     }
 };
-addEvent(window, "resize", drawCanvasImage);
+addEvent(window, "resize", loadImage);
+// autoLoad();
