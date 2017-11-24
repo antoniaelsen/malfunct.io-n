@@ -1,0 +1,28 @@
+{
+  "name": "malfunct.ion",
+  "version": "1.0.0",
+  "description": "## About [malfunct.io/n](http://malfunct.io/n) is a web tool for generating glitch art.   More information on the design of this app is available at the [malfunct.io/n blog](https://cascadi.us/malfunction/).",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.16.2",
+    "morgan": "^1.9.0",
+    "serve-static": "^1.13.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aelsen/malfunct.ion.git"
+  },
+  "author": "Antonia Elsen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aelsen/malfunct.ion/issues"
+  },
+  "engines": {
+    "node": "8.9.1"
+  },
+  "homepage": "https://github.com/aelsen/malfunct.ion#readme"
+}
