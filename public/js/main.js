@@ -134,8 +134,16 @@ function pixelsort(){
   console.log("   select_threshold_grad_dir: " + options.select_threshold_grad_dir);
   console.log("   threshold_lower: " + options.threshold_lower);
   console.log("   threshold_upper: " + options.threshold_upper);
+
+  var width = editor_canvas.width;
+  var height = editor_canvas.height;
+  var lines = 0;
+
+  ectx.putImageData(
+    bctx.getImageData(0, 0, width, height), 0, 0
+  );
   
-  for (var c = 0; c < editor_canvas.width; c++) {
+  for (var c = 0; c < width; c++) {
     var column_data = bctx.getImageData(c, 0, 1, editor_canvas.height).data;
     var column_hsl = data2HSLAArray(column_data);
 
@@ -148,6 +156,7 @@ function pixelsort(){
       // console.log("Bounds: " + bounds);
       continue;
     }
+    lines++;
 
     // Retrieve pixels within bounds
     var slice_hsla = column_hsl.slice(bounds[0], bounds[1]);
@@ -164,10 +173,9 @@ function pixelsort(){
 
     var img = new ImageData(slice_data, 1, bounds[1] - bounds[0]);
     ectx.putImageData(img, c, bounds[0]);
-    drawBorderShadow(ectx, editor_canvas.width, editor_canvas.height);
   }
   
-  console.log("done");
+  console.log("Done: " + lines + " lines applied.");
 }
 
 
@@ -200,7 +208,6 @@ function handleButtonClear() {
 function handleInput(e){
   var id = e.target.id;
   console.log(" Handle input from " + id);
-  loadImage(base_img);
   pixelsort();
 }
 
@@ -246,21 +253,6 @@ function loadImage(img) {
     img.width * scaling_factor, img.height * scaling_factor);
   ectx.drawImage(img, 0, 0, img.width, img.height, 0, 0,
     img.width * scaling_factor, img.height * scaling_factor);
-}
-
-function drawBorderShadow(ctx, width, height) {
-  ctx.beginPath();
-  ctx.globalCompositeOperation='source-atop';
-  
-  ctx.shadowOffsetX = 0;
-  ctx.shadowOffsetY = 0;
-  ctx.shadowBlur = 5;
-  ctx.shadowColor = 'rgba(0, 0, 0, .66)';
-  
-  ctx.rect(0, 0, width, height);
-  ctx.stroke();
-  
-  ctx.globalCompositeOperation='source-over';
 }
 
 function calculateScalingFactor(src_width, src_height, dest_width, dest_height){
