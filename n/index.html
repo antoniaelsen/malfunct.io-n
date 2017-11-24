@@ -58,6 +58,11 @@
 
                 <!-- filter options -->
                 <ul id="filter-options" class="nav flex-column flex-sm-col">
+                    <li class="flex-sm-fill text-sm-center nav-item">
+                        <button class="btn btn-block" id="toggle-mask" data-toggle="button" aria-pressed="false" autocomplete="off">
+                                SHOW MASK
+                        </button>
+                    </li>
                     <li>
                         <p class="nav-item heading">SORTING</p>
                     </li>
@@ -80,15 +85,22 @@
                             <option>ASCENDING</option>
                         </select>
                     </li>
-                    <li class="flex-sm-fill text-sm-center nav-item">
-                        <select class="custom-select ctrl" id="selectThresholdDir">
-                            <option>DESCENDING</option>
-                            <option>ASCENDING</option>
-                        </select>
-                    </li>
-
+            
                     <li>
                         <p class="nav-item heading">THRESHOLDS</p>
+                    </li>
+
+                    <li class="flex-sm-fill text-sm-center nav-item">
+                        <select class="custom-select ctrl" id="selectThresholdDir">
+                            <option>T TOP TO BOT</option>
+                            <option>T BOT TO TOP</option>
+                        </select>
+                    </li>
+                    <li class="flex-sm-fill text-sm-center nav-item">
+                        <select class="custom-select ctrl" id="selectThresholdGradientDir">
+                            <option>T HIGH TO LOW</option>
+                            <option>T LOW TO HIGH</option>
+                        </select>
                     </li>
                     
                     <li class="flex-sm-fill text-sm-center nav-item">
@@ -112,12 +124,12 @@
         </nav>
         <!-- end nav -->
 
-        <main id="canvas-wrapper" class="container-fluid col-sm-8 col-md-9 col-xl-10 offset-md-2 h-100 ">
+        <main id="editor-canvas-wrapper" class="container-fluid col-sm-8 col-md-9 col-xl-10 offset-sm-4 offset-md-2 offset-xl-2 h-100 ">
             <div class="row align-items-center h-100">
                 <div class="col">
                 </div>
                 <div class="col col-auto">
-                    <canvas id="editor" class="row"></canvas>
+                    <canvas id="editor-canvas" class="row"></canvas>
                 </div>
                 <div class="col">
                 </div>
@@ -125,6 +137,8 @@
         </main>
     </div> <!-- row -->
     </div> <!-- end container -->
+
+    <canvas id="base-canvas" style="display: none;"></canvas>
 </body>
 
 <script src="../js/canvas.js"></script>

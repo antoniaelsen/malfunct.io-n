@@ -1,54 +1,87 @@
 // canvas.js
 
-function data2array(data) {
+function data2HSLAArray(data) {
   var array = [];
   for(var i = 0; i < data.length; i+=4){
-    var hsl = rgb2hsl(data[i + 0], data[i + 1], data[i + 2]);
+    var hsl = RGB2HSL(data[i + 0], data[i + 1], data[i + 2]);
     var pixel = [hsl[0], hsl[1], hsl[2], data[i + 3]];
     array.push(pixel);
   }
   return array;
 }
 
-function array2data(array) {
+function data2RGBAArray(data) {
+  var array = [];
+  for(var i = 0; i < data.length; i+=4){
+    var pixel = [data[i + 0], data[i + 1], data[i + 2], data[i + 3]];
+    array.push(pixel);
+  }
+  return array;
+}
+
+function HSLAArray2Data(array) {
   var data = [];
   for(var i = 0; i < array.length; i++){
-    var pixel = array[i];
-    var rgb = hsl2rgb(pixel[0], pixel[1], pixel[2]);
+    var hsla = array[i];
+    var rgb = HSL2RGB(hsla[0], hsla[1], hsla[2]);
     data.push(rgb[0]);
     data.push(rgb[1]);
     data.push(rgb[2]);
+    data.push(hsla[3]);
+  }
+  return Uint8ClampedArray.from(data);
+}
+
+function RGBAArray2Data(array) {
+  var data = [];
+  for(var i = 0; i < array.length; i++){
+    var pixel = array[i];
+    data.push(pixel[0]);
+    data.push(pixel[1]);
+    data.push(pixel[2]);
     data.push(pixel[3]);
   }
   return Uint8ClampedArray.from(data);
 }
 
-var hue2rgb = function hue2rgb(p, q, t){
-  if(t < 0) t += 1;
-  if(t > 1) t -= 1;
-  if(t < 1/6) return p + (q - p) * 6 * t;
-  if(t < 1/2) return q;
-  if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+
+var HUE2RGB = function HUE2RGB(p, q, h){
+  if(h < 0) h += 1;
+  if(h > 1) h -= 1;
+  if(h < 1/6) return p + (q - p) * 6 * h;
+  if(h < 1/2) return q;
+  if(h < 2/3) return p + (q - p) * (2/3 - h) * 6;
   return p;
 }
 
-function hsl2rgb(h, s, l) {
+function HSL2RGB(h, s, l) {
   var r, g, b;
-
-  // If the saturation is 0, the color is greyscale, r, g & b are the same.
+  
   if(s == 0){
-      r = g = b = l; 
+    // If the saturation is 0, the color is greyscale, r, g & b are equal to 
+    //  the luminance.
+    r = g = b = l; 
   } else {
       var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
       var p = 2 * l - q;
-      r = hue2rgb(p, q, h + 1/3);
-      g = hue2rgb(p, q, h);
-      b = hue2rgb(p, q, h - 1/3);
+      var h = h / 360;
+      r = HUE2RGB(p, q, h + 1/3);
+      g = HUE2RGB(p, q, h);
+      b = HUE2RGB(p, q, h - 1/3);
   }
   return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
 
-function rgb2hsl(r, g, b) {
+function HSLAArray2RGBAArray(hsla) {
+  var rgba = [];
+  for(var i = 0; i < hsla.length; i++){
+    var rgb = HSL2RGB(hsla[i][0], hsla[i][1], hsla[i][2]);
+    rgba.push([rgb[0], rgb[1], rgb[2], hsla[i][3]]);
+  }
+  return rgba;
+}
+
+function RGB2HSL(r, g, b) {
   r /= 255, 
   g /= 255, 
   b /= 255;
