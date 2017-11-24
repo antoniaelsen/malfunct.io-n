@@ -125,8 +125,11 @@ hr {
     height: 100%;
     border: 1px solid transparent;
 }
+.sidebar .custom-select:disabled {
+    opacity: .65;
+}
 
-.sidebar .custom-select:hover {
+.sidebar .custom-select:enabled:hover {
     color: white;
     background-color: #E4844A;
 }

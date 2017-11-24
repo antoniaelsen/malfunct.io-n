@@ -42,15 +42,18 @@
 
                 <!-- image options -->
                 <ul id="image-options" class="nav flex-column flex-sm-col ">
+                    <li>
+                        <p class="nav-item heading">IMAGE</p>
+                    </li>
                     <li class="flex-sm-fill text-sm-center nav-item">
-                        <button class="btn btn-block" id="load-button">LOAD IMAGE</button>
+                        <button class="btn btn-block" id="load-button">LOAD</button>
                         <input type="file" id="image-input" name="image-input" style="display: none"/>                        
                     </li>
                     <li class="flex-sm-fill text-sm-center nav-item">
-                        <button class="btn btn-block" id="save-button" download="YourFileName.jpg" disabled>SAVE IMAGE</button>
+                        <button class="btn btn-block" id="save-button" download="YourFileName.jpg" disabled>SAVE</button>
                     </li>
                     <li class="flex-sm-fill text-sm-center nav-item">
-                        <button class="btn btn-block" id="clear-button" disabled>CLEAR IMAGE</button>
+                        <button class="btn btn-block" id="clear-button" disabled>CLEAR</button>
                     </li>
                 </ul>
 
@@ -69,7 +72,7 @@
                         </select>
                     </li>
                     <li class="flex-sm-fill text-sm-center nav-item">
-                        <select class="custom-select ctrl" id="selectOrientation">
+                        <select class="custom-select ctrl" id="selectOrientation" disabled>
                             <option>VERTICAL</option>
                             <option>HORIZONTAL</option>
                         </select>

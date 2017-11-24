@@ -143,6 +143,7 @@ function pixelsort(){
     bctx.getImageData(0, 0, width, height), 0, 0
   );
   
+  // TODO(aelsen): Handle horizontal sort
   for (var c = 0; c < width; c++) {
     var column_data = bctx.getImageData(c, 0, 1, editor_canvas.height).data;
     var column_hsl = data2HSLAArray(column_data);
@@ -169,6 +170,7 @@ function pixelsort(){
       }
     }
 
+    // TODO(aelsen): Identify loss of accuracy
     slice_data = HSLAArray2Data(slice_hsla);
 
     var img = new ImageData(slice_data, 1, bounds[1] - bounds[0]);
@@ -277,5 +279,6 @@ var addEvent = function(object, type, callback) {
         object["on"+type] = callback;
     }
 };
+
+// TODO(aelsen): redraw canvas, appropriately sized
 addEvent(window, "resize", pixelsort());
-// autoLoad();
