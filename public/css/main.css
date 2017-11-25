@@ -76,6 +76,7 @@ hr {
     padding: 20px 0px 20px 0px;
     text-transform: uppercase;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, .66);
+    overflow-y: scroll !important;
 }
 
 @media (max-width: 575px) {

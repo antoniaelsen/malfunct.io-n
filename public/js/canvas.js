@@ -4,20 +4,10 @@ var crs_drag, dragged;
 
 var scaleFactor = 1.1;
 
-function load(img){
-  console.log("load:" + dst_ctx);
-  src_img = img;
-  resizeCanvas(src_cvs, src_img.width, src_img.height);
-  resizeCanvas(dst_cvs, src_img.width, src_img.height);
-  src_ctx.clearRect(0, 0, src_cvs.width, src_cvs.height);
-  dst_ctx.clearRect(0, 0, dst_cvs.width, dst_cvs.height);
-
-  src_ctx.drawImage(img, 0, 0);
-  dst_ctx.drawImage(img, 0, 0);
-
-  trackTransforms(dst_ctx);
-
-  options.image_loaded = true;
+function load(canvas, ctx, img){
+  resizeCanvas(canvas, img.width, img.height);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(img, 0, 0);
 }
 
 function resizeCanvas(canvas, width, height) {
@@ -32,25 +22,24 @@ function resizeCtx(ctx, width, height) {
   console.log("Scaling factor: " + scaling_factor);
   console.log("scaled width, height: " + ctx.width*scaleFactor + ", " + ctx.height*scaleFactor);
   ctx.scale(scaling_factor, scaling_factor);
-
 }
 
-function redraw(canvas, ctx){
+function redraw(canvas, ctx, img){
   // Clear current dst_cvs
   var p1 = ctx.transformedPoint(0,0);
-  var p2 = ctx.transformedPoint(canvas.width,canvas.height);
+  var p2 = ctx.transformedPoint(canvas.width, canvas.height);
   ctx.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
 
   ctx.save();
 
   // Clear nominal dst_cvs
   ctx.setTransform(1,0,0,1,0,0);
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   ctx.restore();
 
-  // TODO: Render modified image
-  ctx.drawImage(src_img,0,0);
+  src = src_ctx.getImageData(0, 0, src_cvs.width, src_cvs.height);
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 }
 
 // dst_cvs Transforms
@@ -126,7 +115,7 @@ var zoom = function(clicks){
   var factor = Math.pow(scaleFactor,clicks);
   dst_ctx.scale(factor,factor);
   dst_ctx.translate(-pt.x,-pt.y);
-  redraw(dst_cvs, dst_ctx);
+  redraw(dst_cvs, dst_ctx, src_cvs);
 }
 
 var handleScroll = function(evt){
@@ -154,7 +143,7 @@ dst_cvs.addEventListener('mousemove', function(evt) {
   if (crs_drag){
     var pt = dst_ctx.transformedPoint(crs_x,crs_y);
     dst_ctx.translate(pt.x-crs_drag.x,pt.y-crs_drag.y);
-    redraw(dst_cvs, dst_ctx);
+    redraw(dst_cvs, dst_ctx, src_cvs);
         }
 }, false);
 
