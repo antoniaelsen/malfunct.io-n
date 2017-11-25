@@ -46,7 +46,6 @@ function redraw(canvas, ctx, img){
 // Adds ctx.getTransform() - returns an SVGMatrix
 // Adds ctx.transformedPoint(x,y) - returns an SVGPoint
 function trackTransforms(ctx){
-  console.log("track:" + ctx);
   var svg = document.createElementNS("http://www.w3.org/2000/svg",'svg');
   var xform = svg.createSVGMatrix();
   ctx.getTransform = function(){ return xform; };

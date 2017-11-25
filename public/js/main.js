@@ -227,3 +227,4 @@ $("#s_sort_criteria").on("change", function(e) {
 });
 
 $(".ctrl").on("change", handleInput);
+$(".ctrl").on("click", handleInput);
