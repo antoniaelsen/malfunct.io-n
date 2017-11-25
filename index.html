@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -19,122 +20,158 @@
 
     <!-- JavaScript Libs -->
     <script src="js/jquery-3.2.1.slim.min.js"></script>
-    <script src="js/popper.min.js" ></script>
+    <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
 </head>
 
 <body>
-    <!-- main container -->
-    <div class="container-fluid h-100">
-    <div class="row h-100">
-        <!-- nav -->
-        <nav class="sidebar col-sm-4 col-md-3 col-xl-2 hidden-sm-down fixed-top">
-            <ul class="nav flex-column justify-content-center">
-                <li>
-                    <p class="text-center brand" href="#">MALFUNCT.IO/N</p>
-                </li>
-                <hr>
-                <li>
-                    <a class="nav-link text-center" href="#">ABOUT</a>
-                </li>
+    <!-- nav -->
+    <nav class="sidebar col-sm-4 col-md-3 col-xl-2 hidden-sm-down fixed-top">
+        <ul class="nav flex-column justify-content-center">
+            <li>
+                <p class="text-center brand" href="#">MALFUNCT.IO/N</p>
+            </li>
+            <hr>
+            <li>
+                <a class="nav-link text-center" href="#">ABOUT</a>
+            </li>
 
-                <hr>
+            <hr>
 
-                <p class="nav-item heading">IMAGE</p>
-                <!-- image options -->
-                <ul id="image-options" class="nav flex-column flex-sm-col ">
-                    <li class="flex-sm-fill text-sm-center nav-item">
-                        <button class="btn btn-block" id="btn_load">LOAD</button>
-                        <input type="file" id="input_image" name="input_image" style="display: none"/>                        
-                    </li>
-                    <li class="flex-sm-fill text-sm-center nav-item">
-                        <button class="btn btn-block" id="btn_save" download="YourFileName.jpg" disabled>SAVE</button>
-                    </li>
-                    <li class="flex-sm-fill text-sm-center nav-item">
-                        <button class="btn btn-block" id="btn_clear" disabled>CLEAR</button>
-                    </li>
-                </ul>
-
-                <hr>
-
-                <!-- filter options -->
-                <p class="nav-item heading">SORTING</p>
-                <ul id="filter-options" class="nav flex-column flex-sm-col">
-                    <li class="flex-sm-fill text-sm-center nav-item">
-                        <select class="custom-select ctrl" id="s_sort_criteria">
-                            <option>LUMINOSITY</option>
-                            <option>HUE</option>
-                            <option>SATURATION</option>
-                        </select>
-                    </li>
-                    <li class="flex-sm-fill text-sm-center nav-item">
-                        <select class="custom-select ctrl" id="s_sort_orientation" disabled>
-                            <option>VERTICAL</option>
-                            <option>HORIZONTAL</option>
-                        </select>
-                    </li>
-                    <li class="flex-sm-fill text-sm-center nav-item">
-                        <select class="custom-select ctrl" id="s_value_order">
-                            <option>DESCENDING</option>
-                            <option>ASCENDING</option>
-                        </select>
-                    </li>
-            
-                    <li>
-                        <p class="nav-item heading">THRESHOLDS</p>
-                    </li>
-                    <li class="flex-sm-fill text-sm-center nav-item">
-                        <button class="btn btn-block ctrl" id="toggle-mask" data-toggle="button" aria-pressed="false" autocomplete="off">
-                                MASK
-                        </button>
-                    </li>
-                    <li class="flex-sm-fill text-sm-center nav-item">
-                        <select class="custom-select ctrl" id="s_threshold_search_dir">
-                            <option>TOP TO BOT</option>
-                            <option>BOT TO TOP</option>
-                        </select>
-                    </li>
-                    <li class="flex-sm-fill text-sm-center nav-item">
-                        <select class="custom-select ctrl" id="s_threshold_bound_order">
-                            <option>HIGH TO LOW</option>
-                            <option>LOW TO HIGH</option>
-                        </select>
-                    </li>
-                    
-                    <li class="flex-sm-fill text-sm-center nav-item">
-                        <div class="row">
-                            <label for="theshold-lower" class="col-sm-3 col-form-label">&#60;</label>
-                            <div class="col-sm-9">
-                                <input type="number" class="custom-form ctrl" id="i_threshold_lower" step="0.00001" min="0" max="1" placeholder="0">
-                            </div>
+            <div id="accordion-image" role="tablist">
+                <div class="card">
+                    <div class="card-header" role="tab" id="header_image_optns">
+                        <h5 class="mb-1">
+                            <a class="nav-link" data-toggle="collapse" href="#collapse_image_optns" aria-expanded="false" aria-controls="collapse_image_optns">
+                                IMAGE
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="collapse_image_optns" class="collapse hide" role="tabpanel" aria-labelledby="header_image_optns" data-parent="#accordion-image">
+                        <div class="card-body">
+                            <!-- image options -->
+                                <ul id="image-options" class="nav flex-column flex-sm-col ">
+                                <li class="flex-sm-fill text-sm-center nav-item">
+                                    <button class="btn btn-block" id="btn_load">LOAD</button>
+                                    <input type="file" id="input_image" name="input_image" style="display: none" />
+                                </li>
+                                <li class="flex-sm-fill text-sm-center nav-item">
+                                    <button class="btn btn-block" id="btn_save" download="YourFileName.jpg" disabled>SAVE</button>
+                                </li>
+                                <li class="flex-sm-fill text-sm-center nav-item">
+                                    <button class="btn btn-block" id="btn_clear" disabled>CLEAR</button>
+                                </li>
+                            </ul>
                         </div>
-                    </li>
-                    <li class="flex-sm-fill text-sm-center nav-item">
-                        <div class="row">
-                            <label for="theshold-upper" class="col-sm-3 col-form-label">&#62;</label>
-                            <div class="col-sm-9">
-                                <input type="number" class="custom-form ctrl" id="i_threshold_upper" step="0.00001" min="0" max="1" placeholder="1">
-                            </div>
-                        </div>
-                    </li>
-                </u
-            </ul>
-        </nav>
-        <!-- end nav -->
+                    </div>
+                </div>
+            </div> <!-- accordion  -->
 
-        <main id="dst_cvs_wrapper" class="container-fluid col-sm-8 col-md-9 col-xl-10 offset-sm-4 offset-md-3 offset-xl-2 h-100 ">
-            <div class="row align-items-center h-100">
-                <div class="col">
+            <hr>
+
+            <!-- filter options -->
+            <div id="accordion-sorting" role="tablist">
+                <div class="card">
+                    <div class="card-header" role="tab" id="header_sorting_optns">
+                        <h5 class="mb-1">
+                            <a class="nav-link" data-toggle="collapse" href="#collapse_sorting_optns" aria-expanded="false" aria-controls="collapse_sorting_optns">
+                                SORTING
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="collapse_sorting_optns" class="collapse hide" role="tabpanel" aria-labelledby="header_sorting_optns">
+                        <div class="card-body">
+                            <ul id="filter-options" class="nav flex-column flex-sm-col">
+                                <li class="flex-sm-fill text-sm-center nav-item">
+                                    <select class="custom-select ctrl" id="s_sort_criteria">
+                                        <option>LUMINOSITY</option>
+                                        <option>HUE</option>
+                                        <option>SATURATION</option>
+                                    </select>
+                                </li>
+                                <li class="flex-sm-fill text-sm-center nav-item">
+                                    <select class="custom-select ctrl" id="s_sort_orientation" disabled>
+                                        <option>VERTICAL</option>
+                                        <option>HORIZONTAL</option>
+                                    </select>
+                                </li>
+                                <li class="flex-sm-fill text-sm-center nav-item">
+                                    <select class="custom-select ctrl" id="s_value_order">
+                                        <option>DESCENDING</option>
+                                        <option>ASCENDING</option>
+                                    </select>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-                <div class="col col-auto">
-                    <canvas id="dst_cvs" class="row"></canvas>
+                <div class="card">
+                    <div class="card-header" role="tab" id="header_threshold_optns">
+                        <h5 class="mb-1">
+                            <a class="nav-link" data-toggle="collapse" href="#collapse_threshold_optns" aria-expanded="false" aria-controls="collapse_threshold_optns">
+                                THRESHOLDS
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="collapse_threshold_optns" class="collapse hide" role="tabpanel" aria-labelledby="header_threshold_optns">
+                        <div class="card-body">
+                            <!-- image options -->
+                            <ul id="threshold-options" class="nav flex-column flex-sm-col ">
+                                <li class="flex-sm-fill text-sm-center nav-item">
+                                    <button class="btn btn-block ctrl" id="toggle-mask" data-toggle="button" aria-pressed="false" autocomplete="off">
+                                        MASK
+                                    </button>
+                                </li>
+                                <li class="flex-sm-fill text-sm-center nav-item">
+                                    <select class="custom-select ctrl" id="s_threshold_search_dir">
+                                        <option>TOP TO BOT</option>
+                                        <option>BOT TO TOP</option>
+                                    </select>
+                                </li>
+                                <li class="flex-sm-fill text-sm-center nav-item">
+                                    <select class="custom-select ctrl" id="s_threshold_bound_order">
+                                        <option>HIGH TO LOW</option>
+                                        <option>LOW TO HIGH</option>
+                                    </select>
+                                </li>
+                
+                                <li class="flex-sm-fill text-sm-center nav-item">
+                                    <div class="row">
+                                        <label for="theshold-lower" class="col-sm-3 col-form-label">&#60;</label>
+                                        <div class="col-sm-9">
+                                            <input type="number" class="custom-form ctrl" id="i_threshold_lower" step="0.00001" min="0" max="1" placeholder="0">
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="flex-sm-fill text-sm-center nav-item">
+                                    <div class="row">
+                                        <label for="theshold-upper" class="col-sm-3 col-form-label">&#62;</label>
+                                        <div class="col-sm-9">
+                                            <input type="number" class="custom-form ctrl" id="i_threshold_upper" step="0.00001" min="0" max="1" placeholder="1">
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-                <div class="col">
-                </div>
-            </div> <!-- end row -->
-        </main>
-    </div> <!-- row -->
-    </div> <!-- end container -->
+            </div> <!-- accordion  -->
+        </ul>
+    </nav>
+    <!-- end nav -->
+
+    <main id="dst_cvs_wrapper" class="container-fluid col-sm-8 col-md-9 col-xl-10 offset-sm-4 offset-md-3 offset-xl-2 h-100 ">
+        <div class="row align-items-center h-100">
+            <div class="col">
+            </div>
+            <div class="col col-auto">
+                <canvas id="dst_cvs" class="row"></canvas>
+            </div>
+            <div class="col">
+            </div>
+        </div>
+        <!-- end row -->
+    </main>
 
     <canvas id="src_cvs" style="display: none;"></canvas>
 </body>

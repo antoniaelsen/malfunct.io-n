@@ -107,6 +107,24 @@ hr {
     border-radius: .25rem;
 }
 
+.sidebar .card {
+    background-color: transparent;
+    border: none;
+}
+
+.sidebar .card-header {
+    border: none;
+    padding: 0px;
+}
+
+.sidebar .card-header:first-child {
+    border: none;
+}
+
+.sidebar .card-body {
+    padding: 0px;
+}
+
 .sidebar .col-form-label {
     color: #E4844A;
     font-weight: 500;
