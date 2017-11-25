@@ -36,7 +36,6 @@ hr {
     }
 }
 
-
 .dropdown-item {
     color: #ffffff;
 }
@@ -107,22 +106,32 @@ hr {
     border-radius: .25rem;
 }
 
-.sidebar .card {
+.card, .sidebar .card-header {
     background-color: transparent;
     border: none;
 }
 
-.sidebar .card-header {
-    border: none;
+.card-header {
     padding: 0px;
 }
 
-.sidebar .card-header:first-child {
+.card-header:first-child {
     border: none;
 }
 
-.sidebar .card-body {
+.card-body {
     padding: 0px;
+}
+
+.card-header .accordion-toggle:after {
+    font-family: 'Glyphicons Halflings';
+    content: "\e114";
+    float: right;
+    color: grey;
+}
+
+.card-header .accordion-toggle.collapsed:after {
+    content: "\e080";
 }
 
 .sidebar .col-form-label {
