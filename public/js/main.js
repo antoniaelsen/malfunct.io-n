@@ -4,8 +4,8 @@ var options = {
   s_sort_criteria: 2, 
   s_orientation: "VERTICAL", 
   s_sort_order: "DESCENDING", 
-  s_threshold_dir: "TOP TO BOT", 
-  s_threshold_grad_dir: "HIGH TO LOW", 
+  s_threshold_search_dir: "DOWNWARD", 
+  s_threshold_grad_dir: "DECREASING", 
   threshold_lower: 0,
   threshold_upper: 1
 };
@@ -24,7 +24,7 @@ function threshold(pixels) {
   var bounds = [-1, -1];
 
   // Hax
-  if (options.s_threshold_dir == "BOT TO TOP") { 
+  if (options.s_threshold_search_dir == "UPWARD") { 
     pixels.reverse();
   }
 
@@ -34,11 +34,11 @@ function threshold(pixels) {
       return v[options.s_sort_criteria]; 
     });
 
-  if (options.s_threshold_grad_dir == "LOW TO HIGH") {
+  if (options.s_threshold_grad_dir == "INCREASING") {
     bounds[0] = thresholdLessThan(mode_slice, options.threshold_lower);
     bounded_slice = mode_slice.slice(bounds[0], mode_slice.length);
     bounds[1] = bounds[0] + thresholdGreaterThan(bounded_slice, options.threshold_upper);
-  } else if (options.s_threshold_grad_dir == "HIGH TO LOW") {
+  } else if (options.s_threshold_grad_dir == "DECREASING") {
     bounds[0] = thresholdGreaterThan(mode_slice, options.threshold_upper);
     bounded_slice = mode_slice.slice(bounds[0], mode_slice.length);
     bounds[1] = bounds[0] + thresholdLessThan(bounded_slice, options.threshold_lower);
@@ -46,7 +46,7 @@ function threshold(pixels) {
   // console.log(bounds);
 
   var leading_axis = options.s_orientation == "VERTICAL" ? dst_cvs.height : dst_cvs.width;
-  if (options.s_threshold_dir == "BOT TO TOP") { 
+  if (options.s_threshold_search_dir == "UPWARD") { 
     var temp = leading_axis - bounds[0]
     bounds[0] = leading_axis - bounds[1];
     bounds[1] = temp;
@@ -62,7 +62,7 @@ function pixelsort(canvas, ctx) {
   console.log("   s_sort_criteria: " + options.s_sort_criteria);
   console.log("   s_orientation: " + options.s_orientation);
   console.log("   s_sort_order: " + options.s_sort_order);
-  console.log("   s_threshold_dir: " + options.s_threshold_dir);
+  console.log("   s_threshold_search_dir: " + options.s_threshold_search_dir);
   console.log("   s_threshold_grad_dir: " + options.s_threshold_grad_dir);
   console.log("   threshold_lower: " + options.threshold_lower);
   console.log("   threshold_upper: " + options.threshold_upper);
@@ -198,11 +198,13 @@ $("#i_threshold_upper").on("change", function(e) { options.threshold_upper= e.ta
 
 $("#s_sort_orientation").on("change", function(e) { options.s_orientation= e.target.value; });
 $("#s_value_order").on("change", function(e) { options.s_sort_order = e.target.value; });
-$("#s_threshold_search_dir").on("change", function(e) { options.s_threshold_dir= e.target.value; });
+$("#s_threshold_search_dir").on("change", function(e) { options.s_threshold_search_dir= e.target.value; });
 $("#s_threshold_bound_order").on("change", function(e) { options.s_threshold_grad_dir= e.target.value; });
 
 $("#toggle-mask").on("click", function(e) { 
   options.toggle_mask = (e.target.getAttribute("aria-pressed") === "false"); // TODO: what?
+  var text = options.toggle_mask ? "ON" : "OFF";
+  $("#toggle-mask").text(text);
 });
 
 $("#s_sort_criteria").on("change", function(e) { 
