@@ -54,3 +54,6 @@ Pixelsorting
   - Hue
 - Threshold Max
 - Threshold MIn
+
+### Sources
+[HTML5 Zoom and Pan Canvas - CodePen](https://codepen.io/techslides/pen/zowLd)

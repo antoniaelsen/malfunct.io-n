@@ -1,108 +1,165 @@
-// canvas.js
 
-function data2HSLAArray(data) {
-  var array = [];
-  for(var i = 0; i < data.length; i+=4){
-    var hsl = RGB2HSL(data[i + 0], data[i + 1], data[i + 2]);
-    var pixel = [hsl[0], hsl[1], hsl[2], data[i + 3]];
-    array.push(pixel);
+var crs_x = 0, crs_y = 0;
+var crs_drag, dragged;
+
+var scaleFactor = 1.1;
+
+function load(img){
+  console.log("load:" + dst_ctx);
+  src_img = img;
+  resizeCanvas(src_cvs, src_img.width, src_img.height);
+  resizeCanvas(dst_cvs, src_img.width, src_img.height);
+  src_ctx.clearRect(0, 0, src_cvs.width, src_cvs.height);
+  dst_ctx.clearRect(0, 0, dst_cvs.width, dst_cvs.height);
+
+  src_ctx.drawImage(img, 0, 0);
+  dst_ctx.drawImage(img, 0, 0);
+
+  trackTransforms(dst_ctx);
+
+  options.image_loaded = true;
+}
+
+function resizeCanvas(canvas, width, height) {
+  canvas.width = width;
+  canvas.height = height;
+}
+
+function resizeCtx(ctx, width, height) {
+  var scaling_factor = calculateScalingFactor(ctx.width, ctx.height, width, height);
+  console.log("outer width, height: " + width + ", " + height);
+  console.log("inner width, height: " + ctx.width + ", " + ctx.height);
+  console.log("Scaling factor: " + scaling_factor);
+  console.log("scaled width, height: " + ctx.width*scaleFactor + ", " + ctx.height*scaleFactor);
+  ctx.scale(scaling_factor, scaling_factor);
+
+}
+
+function redraw(canvas, ctx){
+  // Clear current dst_cvs
+  var p1 = ctx.transformedPoint(0,0);
+  var p2 = ctx.transformedPoint(canvas.width,canvas.height);
+  ctx.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
+
+  ctx.save();
+
+  // Clear nominal dst_cvs
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  ctx.restore();
+
+  // TODO: Render modified image
+  ctx.drawImage(src_img,0,0);
+}
+
+// dst_cvs Transforms
+// Adds ctx.getTransform() - returns an SVGMatrix
+// Adds ctx.transformedPoint(x,y) - returns an SVGPoint
+function trackTransforms(ctx){
+  console.log("track:" + ctx);
+  var svg = document.createElementNS("http://www.w3.org/2000/svg",'svg');
+  var xform = svg.createSVGMatrix();
+  ctx.getTransform = function(){ return xform; };
+
+  var savedTransforms = [];
+  var save = ctx.save;
+  ctx.save = function(){
+      savedTransforms.push(xform.translate(0,0));
+      return save.call(ctx);
+  };
+
+  var restore = ctx.restore;
+  ctx.restore = function(){
+    xform = savedTransforms.pop();
+    return restore.call(ctx);
+      };
+
+  var scale = ctx.scale;
+  ctx.scale = function(sx,sy){
+    xform = xform.scaleNonUniform(sx,sy);
+    return scale.call(ctx,sx,sy);
+      };
+
+  var rotate = ctx.rotate;
+  ctx.rotate = function(radians){
+      xform = xform.rotate(radians*180/Math.PI);
+      return rotate.call(ctx,radians);
+  };
+
+  var translate = ctx.translate;
+  ctx.translate = function(dx,dy){
+      xform = xform.translate(dx,dy);
+      return translate.call(ctx,dx,dy);
+  };
+
+  var transform = ctx.transform;
+  ctx.transform = function(a,b,c,d,e,f){
+      var m2 = svg.createSVGMatrix();
+      m2.a=a; m2.b=b; m2.c=c; m2.d=d; m2.e=e; m2.f=f;
+      xform = xform.multiply(m2);
+      return transform.call(ctx,a,b,c,d,e,f);
+  };
+
+  var setTransform = ctx.setTransform;
+  ctx.setTransform = function(a,b,c,d,e,f){
+      xform.a = a;
+      xform.b = b;
+      xform.c = c;
+      xform.d = d;
+      xform.e = e;
+      xform.f = f;
+      return setTransform.call(ctx,a,b,c,d,e,f);
+  };
+
+  var pt  = svg.createSVGPoint();
+  ctx.transformedPoint = function(x,y){
+      pt.x=x; pt.y=y;
+      return pt.matrixTransform(xform.inverse());
   }
-  return array;
 }
 
-function data2RGBAArray(data) {
-  var array = [];
-  for(var i = 0; i < data.length; i+=4){
-    var pixel = [data[i + 0], data[i + 1], data[i + 2], data[i + 3]];
-    array.push(pixel);
-  }
-  return array;
+// dst_cvs Zoom Listeners
+var zoom = function(clicks){
+  var pt = dst_ctx.transformedPoint(crs_x,crs_y);
+  dst_ctx.translate(pt.x,pt.y);
+  var factor = Math.pow(scaleFactor,clicks);
+  dst_ctx.scale(factor,factor);
+  dst_ctx.translate(-pt.x,-pt.y);
+  redraw(dst_cvs, dst_ctx);
 }
 
-function HSLAArray2Data(array) {
-  var data = [];
-  for(var i = 0; i < array.length; i++){
-    var hsla = array[i];
-    var rgb = HSL2RGB(hsla[0], hsla[1], hsla[2]);
-    data.push(rgb[0]);
-    data.push(rgb[1]);
-    data.push(rgb[2]);
-    data.push(hsla[3]);
-  }
-  return Uint8ClampedArray.from(data);
-}
+var handleScroll = function(evt){
+  var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;
+  if (delta) zoom(delta);
+  return evt.preventDefault() && false;
+};
 
-function RGBAArray2Data(array) {
-  var data = [];
-  for(var i = 0; i < array.length; i++){
-    var pixel = array[i];
-    data.push(pixel[0]);
-    data.push(pixel[1]);
-    data.push(pixel[2]);
-    data.push(pixel[3]);
-  }
-  return Uint8ClampedArray.from(data);
-}
+// dst_cvs.addEventListener('DOMMouseScroll',handleScroll,false);
+// dst_cvs.addEventListener('mousewheel',handleScroll,false);
 
+// dst_cvs Pan Listeners
+dst_cvs.addEventListener('mousedown', function(evt) {
+  document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
+  crs_x = evt.offsetX || (evt.pageX - dst_cvs.offsetLeft);
+  crs_y = evt.offsetY || (evt.pageY - dst_cvs.offsetTop);
+  crs_drag = dst_ctx.transformedPoint(crs_x,crs_y);
+  dragged = false;
+}, false);
 
-var HUE2RGB = function HUE2RGB(p, q, h){
-  if(h < 0) h += 1;
-  if(h > 1) h -= 1;
-  if(h < 1/6) return p + (q - p) * 6 * h;
-  if(h < 1/2) return q;
-  if(h < 2/3) return p + (q - p) * (2/3 - h) * 6;
-  return p;
-}
+dst_cvs.addEventListener('mousemove', function(evt) {
+  crs_x = evt.offsetX || (evt.pageX - dst_cvs.offsetLeft);
+  crs_y = evt.offsetY || (evt.pageY - dst_cvs.offsetTop);
+  dragged = true;
+  if (crs_drag){
+    var pt = dst_ctx.transformedPoint(crs_x,crs_y);
+    dst_ctx.translate(pt.x-crs_drag.x,pt.y-crs_drag.y);
+    redraw(dst_cvs, dst_ctx);
+        }
+}, false);
 
-function HSL2RGB(h, s, l) {
-  var r, g, b;
-  
-  if(s == 0){
-    // If the saturation is 0, the color is greyscale, r, g & b are equal to 
-    //  the luminance.
-    r = g = b = l; 
-  } else {
-      var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-      var p = 2 * l - q;
-      var h = h / 360;
-      r = HUE2RGB(p, q, h + 1/3);
-      g = HUE2RGB(p, q, h);
-      b = HUE2RGB(p, q, h - 1/3);
-  }
-  return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
-}
-
-function HSLAArray2RGBAArray(hsla) {
-  var rgba = [];
-  for(var i = 0; i < hsla.length; i++){
-    var rgb = HSL2RGB(hsla[i][0], hsla[i][1], hsla[i][2]);
-    rgba.push([rgb[0], rgb[1], rgb[2], hsla[i][3]]);
-  }
-  return rgba;
-}
-
-function RGB2HSL(r, g, b) {
-  r /= 255, 
-  g /= 255, 
-  b /= 255;
-  var max = Math.max(r, g, b);
-  var min = Math.min(r, g, b);
-  var h, s, l = (max + min) / 2;
-
-  // If RGB values are the same, the color is greyscale.
-  if(max == min) {
-    h = s = 0;
-  } else {
-    var d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-
-    switch(max){
-        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-        case g: h = (b - r) / d + 2; break;
-        case b: h = (r - g) / d + 4; break;
-    }
-    h /= 6;
-  }
-  return [h, s, l];
-}
-
+dst_cvs.addEventListener('mouseup', function(evt) {
+  crs_drag = null;
+  if (!dragged) zoom(evt.shiftKey ? -1 : 1 );
+}, false);
+        

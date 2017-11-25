@@ -40,45 +40,41 @@
 
                 <hr>
 
+                <p class="nav-item heading">IMAGE</p>
                 <!-- image options -->
                 <ul id="image-options" class="nav flex-column flex-sm-col ">
-                    <li>
-                        <p class="nav-item heading">IMAGE</p>
+                    <li class="flex-sm-fill text-sm-center nav-item">
+                        <button class="btn btn-block" id="btn_load">LOAD</button>
+                        <input type="file" id="input_image" name="input_image" style="display: none"/>                        
                     </li>
                     <li class="flex-sm-fill text-sm-center nav-item">
-                        <button class="btn btn-block" id="load-button">LOAD</button>
-                        <input type="file" id="image-input" name="image-input" style="display: none"/>                        
+                        <button class="btn btn-block" id="btn_save" download="YourFileName.jpg" disabled>SAVE</button>
                     </li>
                     <li class="flex-sm-fill text-sm-center nav-item">
-                        <button class="btn btn-block" id="save-button" download="YourFileName.jpg" disabled>SAVE</button>
-                    </li>
-                    <li class="flex-sm-fill text-sm-center nav-item">
-                        <button class="btn btn-block" id="clear-button" disabled>CLEAR</button>
+                        <button class="btn btn-block" id="btn_clear" disabled>CLEAR</button>
                     </li>
                 </ul>
 
                 <hr>
 
                 <!-- filter options -->
+                <p class="nav-item heading">SORTING</p>
                 <ul id="filter-options" class="nav flex-column flex-sm-col">
-                    <li>
-                        <p class="nav-item heading">SORTING</p>
-                    </li>
                     <li class="flex-sm-fill text-sm-center nav-item">
-                        <select class="custom-select ctrl" id="selectMode">
+                        <select class="custom-select ctrl" id="s_sort_criteria">
                             <option>LUMINOSITY</option>
                             <option>HUE</option>
                             <option>SATURATION</option>
                         </select>
                     </li>
                     <li class="flex-sm-fill text-sm-center nav-item">
-                        <select class="custom-select ctrl" id="selectOrientation" disabled>
+                        <select class="custom-select ctrl" id="s_sort_orientation" disabled>
                             <option>VERTICAL</option>
                             <option>HORIZONTAL</option>
                         </select>
                     </li>
                     <li class="flex-sm-fill text-sm-center nav-item">
-                        <select class="custom-select ctrl" id="selectValueSortOrder">
+                        <select class="custom-select ctrl" id="s_value_order">
                             <option>DESCENDING</option>
                             <option>ASCENDING</option>
                         </select>
@@ -93,13 +89,13 @@
                         </button>
                     </li>
                     <li class="flex-sm-fill text-sm-center nav-item">
-                        <select class="custom-select ctrl" id="selectThresholdDir">
+                        <select class="custom-select ctrl" id="s_threshold_search_dir">
                             <option>TOP TO BOT</option>
                             <option>BOT TO TOP</option>
                         </select>
                     </li>
                     <li class="flex-sm-fill text-sm-center nav-item">
-                        <select class="custom-select ctrl" id="selectThresholdGradientDir">
+                        <select class="custom-select ctrl" id="s_threshold_bound_order">
                             <option>HIGH TO LOW</option>
                             <option>LOW TO HIGH</option>
                         </select>
@@ -109,7 +105,7 @@
                         <div class="row">
                             <label for="theshold-lower" class="col-sm-3 col-form-label">&#60;</label>
                             <div class="col-sm-9">
-                                <input type="number" class="custom-form ctrl" id="inputThresholdLower" step="0.00001" min="0" max="1" placeholder="0">
+                                <input type="number" class="custom-form ctrl" id="i_threshold_lower" step="0.00001" min="0" max="1" placeholder="0">
                             </div>
                         </div>
                     </li>
@@ -117,7 +113,7 @@
                         <div class="row">
                             <label for="theshold-upper" class="col-sm-3 col-form-label">&#62;</label>
                             <div class="col-sm-9">
-                                <input type="number" class="custom-form ctrl" id="inputThresholdUpper" step="0.00001" min="0" max="1" placeholder="1">
+                                <input type="number" class="custom-form ctrl" id="i_threshold_upper" step="0.00001" min="0" max="1" placeholder="1">
                             </div>
                         </div>
                     </li>
@@ -126,12 +122,12 @@
         </nav>
         <!-- end nav -->
 
-        <main id="editor-canvas-wrapper" class="container-fluid col-sm-8 col-md-9 col-xl-10 offset-sm-4 offset-md-3 offset-xl-2 h-100 ">
+        <main id="dst_cvs_wrapper" class="container-fluid col-sm-8 col-md-9 col-xl-10 offset-sm-4 offset-md-3 offset-xl-2 h-100 ">
             <div class="row align-items-center h-100">
                 <div class="col">
                 </div>
                 <div class="col col-auto">
-                    <canvas id="editor-canvas" class="row"></canvas>
+                    <canvas id="dst_cvs" class="row"></canvas>
                 </div>
                 <div class="col">
                 </div>
@@ -140,9 +136,10 @@
     </div> <!-- row -->
     </div> <!-- end container -->
 
-    <canvas id="base-canvas" style="display: none;"></canvas>
+    <canvas id="src_cvs"></canvas>
 </body>
 
+<script src="js/helper.js"></script>
 <script src="js/canvas.js"></script>
 <script src="js/main.js"></script>
 
