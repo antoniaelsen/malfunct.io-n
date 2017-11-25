@@ -117,12 +117,11 @@ function pixelsort(canvas, ctx) {
   console.log("Done: " + lines + " lines applied.");
 }
 
-$(".dropdown-toggle").dropdown();
-
+// $(".dropdown-toggle").dropdown();
 
 function toggleImageButtons(state){
-  $("btn_save").disabled = state;
-  $("btn_clear").disabled = state;
+  $("#btn_save").prop("disabled", state);
+  $("#btn_clear").prop("disabled", state);
 }
 
 // GUI Callbacks
