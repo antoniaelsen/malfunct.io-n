@@ -5,9 +5,10 @@ var options = {
   s_orientation: "COLUMNS", 
   s_sort_order: "DESCENDING", 
   s_threshold_search_dir: "DOWNWARD", 
-  s_threshold_grad_dir: "DECREASING", 
-  threshold_lower: 0,
-  threshold_upper: 1
+  s_threshold_start_dir: "ABOVE", 
+  s_threshold_end_dir: "BELOW", 
+  threshold_start: 0,
+  threshold_end: 1
 };
 
 var src_img = new Image();
@@ -34,15 +35,22 @@ function threshold(pixels) {
       return v[options.s_sort_criteria]; 
     });
 
-  if (options.s_threshold_grad_dir == "INCREASING") {
-    bounds[0] = thresholdLessThan(mode_slice, options.threshold_lower);
-    bounded_slice = mode_slice.slice(bounds[0], mode_slice.length);
-    bounds[1] = bounds[0] + thresholdGreaterThan(bounded_slice, options.threshold_upper);
-  } else if (options.s_threshold_grad_dir == "DECREASING") {
-    bounds[0] = thresholdGreaterThan(mode_slice, options.threshold_upper);
-    bounded_slice = mode_slice.slice(bounds[0], mode_slice.length);
-    bounds[1] = bounds[0] + thresholdLessThan(bounded_slice, options.threshold_lower);
+  // TODO(aelsen): this could be way more elegant
+  if (options.s_threshold_start_dir == "ABOVE") {
+    bounds[0] = thresholdGreaterThan(mode_slice, options.threshold_start);
+  } else if (options.s_threshold_start_dir == "BELOW") {
+    bounds[0] = thresholdLessThan(mode_slice, options.threshold_start);
   }
+
+  if (bounds[0] == -1) { return bounds; }
+  bounded_slice = mode_slice.slice(bounds[0], mode_slice.length);
+
+  if (options.s_threshold_end_dir == "ABOVE") {
+    bounds[1] = thresholdGreaterThan(bounded_slice, options.threshold_end);
+  } else if (options.s_threshold_end_dir == "BELOW") {
+    bounds[1] = thresholdLessThan(bounded_slice, options.threshold_end);
+  }
+
   // console.log(bounds);
 
   var leading_axis = options.s_orientation == "COLUMNS" ? dst_cvs.height : dst_cvs.width;
@@ -63,9 +71,10 @@ function pixelsort(canvas, ctx) {
   console.log("   s_orientation: " + options.s_orientation);
   console.log("   s_sort_order: " + options.s_sort_order);
   console.log("   s_threshold_search_dir: " + options.s_threshold_search_dir);
-  console.log("   s_threshold_grad_dir: " + options.s_threshold_grad_dir);
-  console.log("   threshold_lower: " + options.threshold_lower);
-  console.log("   threshold_upper: " + options.threshold_upper);
+  console.log("   s_threshold_start_dir: " + options.s_threshold_start_dir);
+  console.log("   s_threshold_end_dir: " + options.s_threshold_end_dir);
+  console.log("   threshold_start: " + options.threshold_start);
+  console.log("   threshold_end: " + options.threshold_end);
 
   load(canvas, ctx, src_img);
   var width = canvas.width;
@@ -194,13 +203,14 @@ $("#btn_save").on("click", btnSave);
 $("#btn_clear").on("click", btnClear);
 $("#input_image").on("change", inputLoad);
 
-$("#i_threshold_lower").on("change", function(e) { options.threshold_lower = e.target.value; });
-$("#i_threshold_upper").on("change", function(e) { options.threshold_upper= e.target.value; });
+$("#i_threshold_start").on("change", function(e) { options.threshold_start = e.target.value; });
+$("#i_threshold_end").on("change", function(e) { options.threshold_end= e.target.value; });
 
 $("#s_sort_orientation").on("change", function(e) { options.s_orientation= e.target.value; });
 $("#s_value_order").on("change", function(e) { options.s_sort_order = e.target.value; });
 $("#s_threshold_search_dir").on("change", function(e) { options.s_threshold_search_dir= e.target.value; });
-$("#s_threshold_bound_order").on("change", function(e) { options.s_threshold_grad_dir= e.target.value; });
+$("#s_threshold_start_dir").on("change", function(e) { options.s_threshold_start_dir= e.target.value; });
+$("#s_threshold_end_dir").on("change", function(e) { options.s_threshold_end_dir= e.target.value; });
 
 $("#toggle-mask").on("click", function(e) { 
   options.toggle_mask = (e.target.getAttribute("aria-pressed") === "false"); // TODO: what?

@@ -143,26 +143,29 @@
                                         </select>
                                     </div>
                                 </li>
-                                <li class="flex-sm-fill text-center nav-item">
-                                    <div class="row m-0">
-                                            <p class="label text-left col-5">BOUNDS</p>
-                                        <select class="custom-select ctrl col-7" id="s_threshold_bound_order">
-                                            <option>INCREASING</option>
-                                            <option>DECREASING</option>
-                                        </select>
-                                    </div>
-                                </li>
                 
                                 <li class="flex-sm-fill text-center nav-item">
                                     <div class="row m-0">
-                                        <label for="theshold-lower" class="col-5 col-form-label label text-left">BELOW</label>
-                                        <input type="number" class="custom-form ctrl col-7" id="i_threshold_lower" step="0.00001" min="0" max="1" placeholder="0">
+                                        <label for="threshold_start" class="col-5 col-form-label label text-left">START</label>
+                                        <select class="custom-select ctrl col-4" id="s_threshold_start_dir">
+                                            <option>ABOVE</option>
+                                            <option>BELOW</option>
+                                        </select>
+                                        <div class="col-3 pr-0">
+                                            <input type="number" class="custom-form ctrl" id="i_threshold_start" step="0.00001" min="0" max="1" placeholder="0">
+                                        </div>
                                     </div>
                                 </li>
                                 <li class="flex-sm-fill text-center nav-item">
                                     <div class="row m-0">
-                                        <label for="theshold-upper" class="col-5 col-form-label label text-left">ABOVE</label>
-                                        <input type="number" class="custom-form ctrl col-7" id="i_threshold_upper" step="0.00001" min="0" max="1" placeholder="1">
+                                        <label for="theshold-upper" class="col-5 col-form-label label text-left">END</label>
+                                        <select class="custom-select ctrl col-4" id="s_threshold_end_dir">
+                                            <option>BELOW</option>
+                                            <option>ABOVE</option>
+                                        </select>
+                                        <div class="col-3 pr-0">
+                                            <input type="number" class="custom-form ctrl" id="i_threshold_end" step="0.00001" min="0" max="1" placeholder="1">
+                                        </div>
                                     </div>
                                 </li>
                             </ul>
