@@ -41,7 +41,7 @@
             <div id="accordion-image" role="tablist">
                 <div class="card">
                     <div class="card-header" role="tab" id="header_image_optns">
-                        <h5 class="mb-1">
+                        <h5>
                             <a class="nav-link accordion-toggle" data-toggle="collapse" href="#collapse_image_optns" aria-expanded="false" aria-controls="collapse_image_optns">
                                 IMAGE
                             </a>
@@ -51,14 +51,14 @@
                         <div class="card-body">
                             <!-- image options -->
                                 <ul id="image-options" class="nav flex-column flex-sm-col ">
-                                <li class="flex-sm-fill text-sm-center nav-item">
+                                <li class="flex-sm-fill text-center nav-item">
                                     <button class="btn btn-block" id="btn_load">LOAD</button>
                                     <input type="file" id="input_image" name="input_image" style="display: none" />
                                 </li>
-                                <li class="flex-sm-fill text-sm-center nav-item">
+                                <li class="flex-sm-fill text-center nav-item">
                                     <button class="btn btn-block" id="btn_save" download="YourFileName.jpg" disabled>SAVE</button>
                                 </li>
-                                <li class="flex-sm-fill text-sm-center nav-item">
+                                <li class="flex-sm-fill text-center nav-item">
                                     <button class="btn btn-block" id="btn_clear" disabled>CLEAR</button>
                                 </li>
                             </ul>
@@ -73,7 +73,7 @@
             <div id="accordion-sorting" role="tablist">
                 <div class="card">
                     <div class="card-header" role="tab" id="header_sorting_optns">
-                        <h5 class="mb-1">
+                        <h5>
                             <a class="nav-link accordion-toggle" data-toggle="collapse" href="#collapse_sorting_optns" aria-expanded="false" aria-controls="collapse_sorting_optns">
                                 SORTING
                             </a>
@@ -82,24 +82,33 @@
                     <div id="collapse_sorting_optns" class="collapse hide" role="tabpanel" aria-labelledby="header_sorting_optns">
                         <div class="card-body">
                             <ul id="filter-options" class="nav flex-column flex-sm-col">
-                                <li class="flex-sm-fill text-sm-center nav-item">
-                                    <select class="custom-select ctrl" id="s_sort_criteria">
-                                        <option>LUMINOSITY</option>
-                                        <option>HUE</option>
-                                        <option>SATURATION</option>
-                                    </select>
+                                <li class="flex-sm-fill text-center nav-item">
+                                    <div class="row m-0">
+                                            <p class="label text-left col-5">MODE</p>
+                                        <select class="custom-select ctrl col-7" id="s_sort_criteria">
+                                            <option>LUMINOSITY</option>
+                                            <option>HUE</option>
+                                            <option>SATURATION</option>
+                                        </select>
+                                    </div>
                                 </li>
-                                <li class="flex-sm-fill text-sm-center nav-item">
-                                    <select class="custom-select ctrl" id="s_sort_orientation" disabled>
-                                        <option>VERTICAL</option>
-                                        <option>HORIZONTAL</option>
-                                    </select>
+                                <li class="flex-sm-fill text-center nav-item">
+                                    <div class="row m-0">
+                                            <p class="label text-left col-5">ORIENTATION</p>
+                                        <select class="custom-select ctrl col-7" id="s_sort_orientation" disabled>
+                                            <option>VERTICAL</option>
+                                            <option>HORIZONTAL</option>
+                                        </select>
+                                    </div>
                                 </li>
-                                <li class="flex-sm-fill text-sm-center nav-item">
-                                    <select class="custom-select ctrl" id="s_value_order">
-                                        <option>DESCENDING</option>
-                                        <option>ASCENDING</option>
-                                    </select>
+                                <li class="flex-sm-fill text-center nav-item">
+                                    <div class="row m-0">
+                                            <p class="label text-left col-5">SORT ORDER</p>
+                                        <select class="custom-select ctrl col-7" id="s_value_order">
+                                            <option>DESCENDING</option>
+                                            <option>ASCENDING</option>
+                                        </select>
+                                    </div>
                                 </li>
                             </ul>
                         </div>
@@ -107,48 +116,53 @@
                 </div>
                 <div class="card">
                     <div class="card-header" role="tab" id="header_threshold_optns">
-                        <h5 class="mb-1">
+                        <h5>
                             <a class="nav-link accordion-toggle" data-toggle="collapse" href="#collapse_threshold_optns" aria-expanded="false" aria-controls="collapse_threshold_optns">
                                 THRESHOLDS
                             </a>
                         </h5>
                     </div>
-                    <div id="collapse_threshold_optns" class="collapse hide" role="tabpanel" aria-labelledby="header_threshold_optns">
+                    <div id="collapse_threshold_optns" class="collapse show" role="tabpanel" aria-labelledby="header_threshold_optns">
                         <div class="card-body">
                             <!-- image options -->
                             <ul id="threshold-options" class="nav flex-column flex-sm-col ">
-                                <li class="flex-sm-fill text-sm-center nav-item">
-                                    <button class="btn btn-block ctrl" id="toggle-mask" data-toggle="button" aria-pressed="false" autocomplete="off">
-                                        OFF
-                                    </button>
-                                </li>
-                                <li class="flex-sm-fill text-sm-center nav-item">
-                                    <select class="custom-select ctrl" id="s_threshold_search_dir">
-                                        <option>DOWNWARD</option>
-                                        <option>UPWARD</option>
-                                    </select>
-                                </li>
-                                <li class="flex-sm-fill text-sm-center nav-item">
-                                    <select class="custom-select ctrl" id="s_threshold_bound_order">
-                                        <option>INCREASING</option>
-                                        <option>DECREASING</option>
-                                    </select>
-                                </li>
-                
-                                <li class="flex-sm-fill text-sm-center nav-item">
-                                    <div class="row">
-                                        <label for="theshold-lower" class="col-sm-3 col-form-label">&#60;</label>
-                                        <div class="col-sm-9">
-                                            <input type="number" class="custom-form ctrl" id="i_threshold_lower" step="0.00001" min="0" max="1" placeholder="0">
-                                        </div>
+                                <li class="flex-sm-fill text-center nav-item">
+                                    <div class="row m-0">
+                                        <p class="label text-left col-5">MASK</p>
+                                        <button class="btn btn-block ctrl col-7" id="toggle-mask" data-toggle="button" aria-pressed="true" autocomplete="off">
+                                            OFF
+                                        </button>
                                     </div>
                                 </li>
-                                <li class="flex-sm-fill text-sm-center nav-item">
-                                    <div class="row">
-                                        <label for="theshold-upper" class="col-sm-3 col-form-label">&#62;</label>
-                                        <div class="col-sm-9">
-                                            <input type="number" class="custom-form ctrl" id="i_threshold_upper" step="0.00001" min="0" max="1" placeholder="1">
-                                        </div>
+                                <li class="flex-sm-fill text-center nav-item">
+                                    <div class="row m-0">
+                                        <p class="label text-left col-5">SCAN</p>
+                                        <select class="custom-select ctrl col-7" id="s_threshold_search_dir">
+                                            <option>DOWNWARD</option>
+                                            <option>UPWARD</option>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li class="flex-sm-fill text-center nav-item">
+                                    <div class="row m-0">
+                                            <p class="label text-left col-5">BOUNDS</p>
+                                        <select class="custom-select ctrl col-7" id="s_threshold_bound_order">
+                                            <option>INCREASING</option>
+                                            <option>DECREASING</option>
+                                        </select>
+                                    </div>
+                                </li>
+                
+                                <li class="flex-sm-fill text-center nav-item">
+                                    <div class="row m-0">
+                                        <label for="theshold-lower" class="col-5 col-form-label label text-left">BELOW</label>
+                                        <input type="number" class="custom-form ctrl col-7" id="i_threshold_lower" step="0.00001" min="0" max="1" placeholder="0">
+                                    </div>
+                                </li>
+                                <li class="flex-sm-fill text-center nav-item">
+                                    <div class="row m-0">
+                                        <label for="theshold-upper" class="col-5 col-form-label label text-left">ABOVE</label>
+                                        <input type="number" class="custom-form ctrl col-7" id="i_threshold_upper" step="0.00001" min="0" max="1" placeholder="1">
                                     </div>
                                 </li>
                             </ul>
