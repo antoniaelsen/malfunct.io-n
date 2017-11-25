@@ -26,7 +26,7 @@
 
 <body>
     <!-- nav -->
-    <nav class="sidebar col-sm-5 col-md-4 col-xl-3 hidden-xs-down fixed-top">
+    <nav class="sidebar col-sm-5 col-md-4 col-xl-3 hidden-xs fixed-top">
         <ul class="nav flex-column justify-content-center">
             <li>
                 <p class="text-center brand" href="#">MALFUNCT.IO/N</p>
@@ -190,7 +190,33 @@
         <!-- end row -->
     </main>
 
-    <canvas id="src_cvs" style="display: none;"></canvas>
+    <div class="color_picker hidden-xs">
+        <div class="container h-100">
+            <div class="row align-items-center">
+                
+                <div class="col-8 align-self-center">
+                    <div class="row justify-content-start">
+                        <p class="col-3">RGB</p>
+                        <p id="p_picker_r" class="col-3">-</p>
+                        <p id="p_picker_g" class="col-3">-</p>
+                        <p id="p_picker_b" class="col-3">-</p>
+                    </div>
+                    <div class="row justify-content-start">
+                        <p class="col-3">HSL</p>
+                        <p id="p_picker_h" class="col-3">-</p>
+                        <p id="p_picker_s" class="col-3">-</p>
+                        <p id="p_picker_l" class="col-3">-</p>
+                    </div>
+                </div>
+
+                <div class="col-4 align-self-center">
+                    <div id="color_sample"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="src_cvs"style="display: none;"></canvas>
 </body>
 
 <script src="js/helper.js"></script>

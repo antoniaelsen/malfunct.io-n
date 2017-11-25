@@ -119,6 +119,25 @@ function pixelsort(canvas, ctx) {
 
 // $(".dropdown-toggle").dropdown();
 
+function pickColor(e) {
+  var x = event.layerX;
+  var y = event.layerY;
+  var data = dst_ctx.getImageData(x, y, 1, 1).data;
+  var rgba = data2RGBAArray(data)[0];
+  var hsla = RGBA2HSLA(rgba);
+
+  var str_rgba = "RGBA(" + 
+    rgba[0] + ", " + rgba[1] + ", " + rgba[2] + ", " + rgba[3] + ")"; // Ugh.
+
+  $('#color_sample').css("background-color", str_rgba);
+  $('#p_picker_r').text(rgba[0]);
+  $('#p_picker_g').text(rgba[1]);
+  $('#p_picker_b').text(rgba[2]);
+  $('#p_picker_h').text(hsla[0].toFixed(2));
+  $('#p_picker_s').text(hsla[1].toFixed(2));
+  $('#p_picker_l').text(hsla[2].toFixed(2));
+};
+
 function toggleImageButtons(state){
   $("#btn_save").prop("disabled", state);
   $("#btn_clear").prop("disabled", state);
@@ -196,6 +215,7 @@ var addEvent = function(object, type, callback) {
 
 // Bindings
 addEvent(window, "resize", resize);
+dst_cvs.addEventListener('mousemove', pickColor);
 
 $("#btn_load").on("click", btnLoad);
 $("#btn_save").on("click", btnSave);
@@ -233,6 +253,7 @@ $("#s_sort_criteria").on("change", function(e) {
   }
   options.s_sort_criteria = mode; 
 });
+
 
 $(".ctrl").on("change", handleInput);
 $("#toggle-mask").on("click", handleInput);

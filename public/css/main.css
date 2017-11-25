@@ -2,7 +2,7 @@ a, p, label, .btn, .custom-select {
     font-family: 'Montserrat', sans-serif;
     font-size: .75rem;
     font-weight: 500;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     color: #E4844A;
 }
 
@@ -51,9 +51,8 @@ hr {
 .label {
     font-size: 10px;
     padding: 0px 0px 0px 5px;
-    margin: 12px 0px 10px 0px;
+    margin: 12px 0px 12px 0px;
     word-wrap: normal;
-    color: #91204D;
 }
 
 .nav-item {
@@ -131,12 +130,6 @@ hr {
     float: right;
 }
 
-.card-header .accordion-toggle.collapsed:after {
-}
-
-.sidebar .col-form-label {
-}
-
 .sidebar .custom-select {
     background-color: #91204D;
     color: #E8BF56;
@@ -171,6 +164,10 @@ hr {
     border-radius: 4px;
 }
 
+.sidebar .label {
+    color: #91204D;
+}
+
 .sidebar .nav{
     padding: 10px 0px 10px 0px;
 }
@@ -179,4 +176,37 @@ hr {
     color: #E8BF56;
     background-color: transparent;
     
+}
+
+.color_picker {
+    z-index: 2000;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 300px;
+    height: 100px;
+    background-color: rgba(255, 255, 255, .20);
+    border: 1px solid transparent;
+    border-radius: 4px;
+    
+}
+
+@media (max-width: 575px) {
+    .color_picker {
+        display: none;
+    }
+}
+
+.color_picker p{
+    color: white;
+    margin-top: 10px;
+    font-size: 9px;
+}
+
+#color_sample {
+    border: 1px solid transparent;
+    border-radius: 4px;
+    width: 70px;
+    height: 70px;
+    margin: 15px 0px 15px 0px;
 }
