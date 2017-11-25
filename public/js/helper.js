@@ -4,9 +4,9 @@ function compare(a, b) {
       return 0;
   }
   else {
-    if (options.s_sort_order == "DESCENDING") {
+    if (options.s_sort_order == "ASCENDING") {
       return (a[i] < b[i]) ? -1 : 1;
-    } else if (options.s_sort_order == "ASCENDING") {
+    } else if (options.s_sort_order == "DESCENDING") {
       return (a[i] < b[i]) ? 1 : -1;
     }
   }
@@ -51,7 +51,7 @@ function RGBAArray2Data(rgba) {
   var data = [];
   for(var i = 0; i < rgba.length; i++){
     for (var j = 0; j < 4; j++) { 
-      data.push(rgba[j]); 
+      data.push(rgba[i][j]); 
     }
   }
   return Uint8ClampedArray.from(data);

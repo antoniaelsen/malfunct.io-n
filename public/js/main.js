@@ -98,7 +98,6 @@ function pixelsort(canvas, ctx) {
       }
     }
 
-    // TODO(aelsen): Identify loss of accuracy
     slice_data = HSLAArray2Data(slice_hsla);
 
     var img = new ImageData(slice_data, 1, bounds[1] - bounds[0]);
@@ -119,7 +118,6 @@ function toggleImageButtons(state){
 // GUI Callbacks
 function handleInput(e){
   var id = e.target.id;
-  console.log(" Handle input from " + id); 
   pixelsort(src_cvs, src_ctx);
   redraw(dst_cvs, dst_ctx, src_cvs);
 }
@@ -158,11 +156,10 @@ function inputLoad(e){
 }
 
 function btnSave() {
-  // TODO(aelsen): This is hacky as fuuuuuuuuuuck
   var a  = document.createElement('a');
-  var dst_cvs_href = dst_cvs.toDataURL('image/png');
+  var src_cvs_href = src_cvs.toDataURL('image/png');
   
-  a.href = dst_cvs_href;
+  a.href = src_cvs_href;
   a.download = 'malfunction-output.png';
 
   a.click();
@@ -190,7 +187,6 @@ var addEvent = function(object, type, callback) {
 
 // Bindings
 addEvent(window, "resize", resize);
-
 
 $("#btn_load").on("click", btnLoad);
 $("#btn_save").on("click", btnSave);
@@ -227,4 +223,4 @@ $("#s_sort_criteria").on("change", function(e) {
 });
 
 $(".ctrl").on("change", handleInput);
-$(".ctrl").on("click", handleInput);
+$("#toggle-mask").on("click", handleInput);
