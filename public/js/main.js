@@ -2,7 +2,7 @@ var options = {
   toggle_mask: false,
   s_replace: "REPLACE",
   s_sort_criteria: 2, 
-  s_orientation: "VERTICAL", 
+  s_orientation: "COLUMNS", 
   s_sort_order: "DESCENDING", 
   s_threshold_search_dir: "DOWNWARD", 
   s_threshold_grad_dir: "DECREASING", 
@@ -45,7 +45,7 @@ function threshold(pixels) {
   }
   // console.log(bounds);
 
-  var leading_axis = options.s_orientation == "VERTICAL" ? dst_cvs.height : dst_cvs.width;
+  var leading_axis = options.s_orientation == "COLUMNS" ? dst_cvs.height : dst_cvs.width;
   if (options.s_threshold_search_dir == "UPWARD") { 
     var temp = leading_axis - bounds[0]
     bounds[0] = leading_axis - bounds[1];
@@ -89,13 +89,14 @@ function pixelsort(canvas, ctx) {
 
     // Retrieve pixels within bounds
     var slice_hsla = line_hsla.slice(bounds[0], bounds[1]);
-    slice_hsla.sort(compare);
-
+    
     // Show bounds
     if (options.toggle_mask) {
       for (var i = 0; i < slice_hsla.length; i++) {
         slice_hsla[i][0] = 100;
       }
+    } else {
+      slice_hsla.sort(compare);
     }
 
     slice_data = HSLAArray2Data(slice_hsla);
