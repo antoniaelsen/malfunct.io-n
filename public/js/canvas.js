@@ -1,7 +1,6 @@
 
 var crs_x = 0, crs_y = 0;
 var crs_drag, dragged;
-
 var scaleFactor = 1.1;
 
 function load(canvas, ctx, img){
@@ -13,15 +12,6 @@ function load(canvas, ctx, img){
 function resizeCanvas(canvas, width, height) {
   canvas.width = width;
   canvas.height = height;
-}
-
-function resizeCtx(ctx, width, height) {
-  var scaling_factor = calculateScalingFactor(ctx.width, ctx.height, width, height);
-  console.log("outer width, height: " + width + ", " + height);
-  console.log("inner width, height: " + ctx.width + ", " + ctx.height);
-  console.log("Scaling factor: " + scaling_factor);
-  console.log("scaled width, height: " + ctx.width*scaleFactor + ", " + ctx.height*scaleFactor);
-  ctx.scale(scaling_factor, scaling_factor);
 }
 
 function redraw(canvas, ctx, img){
@@ -42,7 +32,6 @@ function redraw(canvas, ctx, img){
   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 }
 
-// dst_cvs Transforms
 // Adds ctx.getTransform() - returns an SVGMatrix
 // Adds ctx.transformedPoint(x,y) - returns an SVGPoint
 function trackTransforms(ctx){
@@ -107,7 +96,8 @@ function trackTransforms(ctx){
   }
 }
 
-// dst_cvs Zoom Listeners
+
+// Canvas Zoom Listeners
 var zoom = function(clicks){
   var pt = dst_ctx.transformedPoint(crs_x,crs_y);
   dst_ctx.translate(pt.x,pt.y);
@@ -123,10 +113,7 @@ var handleScroll = function(evt){
   return evt.preventDefault() && false;
 };
 
-// dst_cvs.addEventListener('DOMMouseScroll',handleScroll,false);
-// dst_cvs.addEventListener('mousewheel',handleScroll,false);
-
-// dst_cvs Pan Listeners
+// Canvas Pan Listeners
 dst_cvs.addEventListener('mousedown', function(evt) {
   document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
   crs_x = evt.offsetX || (evt.pageX - dst_cvs.offsetLeft);

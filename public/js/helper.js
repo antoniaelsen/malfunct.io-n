@@ -1,5 +1,3 @@
-// canvas.js
-
 function compare(a, b) {
   var i = options.s_sort_criteria;
   if (a[i] === b[i]) {
@@ -31,13 +29,13 @@ function thresholdLessThan(array, threshold){
 
 // Color Operations
 function data2HSLAArray(data) {
-  var array = [];
-  for(var i = 0; i < data.length; i+=4){
-    var hsl = RGB2HSL(data[i + 0], data[i + 1], data[i + 2]);
-    var pixel = [hsl[0], hsl[1], hsl[2], data[i + 3]];
-    array.push(pixel);
-  }
-  return array;
+  var hsla = RGBAArray2HSLAArray( data2RGBAArray(data) );
+  return hsla;
+}
+
+function HSLAArray2Data(hsla) {
+  var data = RGBAArray2Data( HSLAArray2RGBAArray(hsla) );
+  return Uint8ClampedArray.from(data);
 }
 
 function data2RGBAArray(data) {
@@ -49,29 +47,30 @@ function data2RGBAArray(data) {
   return array;
 }
 
-function HSLAArray2Data(array) {
+function RGBAArray2Data(rgba) {
   var data = [];
-  for(var i = 0; i < array.length; i++){
-    var hsla = array[i];
-    var rgb = HSL2RGB(hsla[0], hsla[1], hsla[2]);
-    data.push(rgb[0]);
-    data.push(rgb[1]);
-    data.push(rgb[2]);
-    data.push(hsla[3]);
+  for(var i = 0; i < rgba.length; i++){
+    for (var j = 0; j < 4; j++) { 
+      data.push(rgba[j]); 
+    }
   }
   return Uint8ClampedArray.from(data);
 }
 
-function RGBAArray2Data(array) {
-  var data = [];
-  for(var i = 0; i < array.length; i++){
-    var pixel = array[i];
-    data.push(pixel[0]);
-    data.push(pixel[1]);
-    data.push(pixel[2]);
-    data.push(pixel[3]);
+function HSLAArray2RGBAArray(hsla) {
+  var rgba = [];
+  for(var i = 0; i < hsla.length; i++){
+    rgba.push(HSLA2RGBA(hsla[i]));
   }
-  return Uint8ClampedArray.from(data);
+  return rgba;
+}
+
+function RGBAArray2HSLAArray(rgba) {
+  var hsla = [];
+  for(var i = 0; i < rgba.length; i++){
+    hsla.push(RGBA2HSLA(rgba[i]));
+  }
+  return hsla;
 }
 
 
@@ -84,7 +83,8 @@ var HUE2RGB = function HUE2RGB(p, q, h){
   return p;
 }
 
-function HSL2RGB(h, s, l) {
+function HSLA2RGBA(hsla) {
+  var h = hsla[0], s = hsla[1], l = hsla[2], a = hsla[3]; 
   var r, g, b;
   
   if(s == 0){
@@ -99,47 +99,32 @@ function HSL2RGB(h, s, l) {
       g = HUE2RGB(p, q, h);
       b = HUE2RGB(p, q, h - 1/3);
   }
-  return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+  return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255), a];
 }
 
-function HSLAArray2RGBAArray(hsla) {
-  var rgba = [];
-  for(var i = 0; i < hsla.length; i++){
-    var rgb = HSL2RGB(hsla[i][0], hsla[i][1], hsla[i][2]);
-    rgba.push([rgb[0], rgb[1], rgb[2], hsla[i][3]]);
-  }
-  return rgba;
-}
+function RGBA2HSLA(rgba) {
+  var r = rgba[0], g = rgba[1], b = rgba[2], a = rgba[3];
+  r /= 255, g /= 255, b /= 255;
 
-function RGB2HSL(r, g, b) {
-  r /= 255, 
-  g /= 255, 
-  b /= 255;
   var max = Math.max(r, g, b);
   var min = Math.min(r, g, b);
+  var d = max - min;
   var h, s, l = (max + min) / 2;
 
   // If RGB values are the same, the color is greyscale.
-  if(max == min) {
+  if(d == 0) {
     h = s = 0;
   } else {
-    var d = max - min;
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
 
     switch(max){
-        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case r: h = ((g - b) / d) % 6 ; break;
         case g: h = (b - r) / d + 2; break;
         case b: h = (r - g) / d + 4; break;
     }
-    h /= 6;
+    h *= 60;
   }
-  return [h, s, l];
-}
-
-// Canvas Operations
-function resizeCanvas(canvas, width, height){
-  canvas.width = width;
-  canvas.height = height;
+  return [h, s, l, a];
 }
 
 function calculateScalingFactor(src_width, src_height, dest_width, dest_height){
