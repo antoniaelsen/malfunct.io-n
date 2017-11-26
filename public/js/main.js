@@ -195,7 +195,6 @@ function btnSave() {
 }
 
 function btnClear() {
-  base_img = new Image();
   options.image_loaded = false;
   src_ctx.clearRect(0, 0, src_cvs.width, src_cvs.height);
   dst_ctx.clearRect(0, 0, dst_cvs.width, dst_cvs.height);

@@ -201,6 +201,7 @@ hr {
     color: white;
     margin-top: 10px;
     font-size: 9px;
+    text-shadow: 0px 0px 1px #000;
 }
 
 #color_sample {
