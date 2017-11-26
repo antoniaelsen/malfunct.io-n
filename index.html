@@ -95,7 +95,7 @@
                                 <li class="flex-sm-fill text-center nav-item">
                                     <div class="row m-0">
                                         <p class="label text-left col-5">SORT&nbsp;DIR</p>
-                                        <select class="custom-select ctrl col-7" id="s_sort_orientation" disabled>
+                                        <select class="custom-select ctrl col-7" id="s_sort_orientation">
                                             <option>COLUMNS</option>
                                             <option>ROWS</option>
                                         </select>
@@ -105,8 +105,8 @@
                                     <div class="row m-0">
                                             <p class="label text-left col-5">SORT&nbsp;ORDER</p>
                                         <select class="custom-select ctrl col-7" id="s_value_order">
-                                            <option>DESCENDING</option>
                                             <option>ASCENDING</option>
+                                            <option>DESCENDING</option>
                                         </select>
                                     </div>
                                 </li>
@@ -152,7 +152,7 @@
                                             <option>BELOW</option>
                                         </select>
                                         <div class="col-3 pr-0">
-                                            <input type="number" class="custom-form ctrl" id="i_threshold_start" step="0.00001" min="0" max="1" placeholder="0">
+                                            <input type="number" class="custom-form ctrl" id="i_threshold_start" step="0.00001" min="0" max="255" placeholder=".8">
                                         </div>
                                     </div>
                                 </li>
@@ -164,7 +164,7 @@
                                             <option>ABOVE</option>
                                         </select>
                                         <div class="col-3 pr-0">
-                                            <input type="number" class="custom-form ctrl" id="i_threshold_end" step="0.00001" min="0" max="1" placeholder="1">
+                                            <input type="number" class="custom-form ctrl" id="i_threshold_end" step="0.00001" min="0" max="255" placeholder=".2">
                                         </div>
                                     </div>
                                 </li>

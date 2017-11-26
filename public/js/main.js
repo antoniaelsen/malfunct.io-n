@@ -1,14 +1,14 @@
-var options = {
+var op = {
   toggle_mask: false,
   s_replace: "REPLACE",
-  s_sort_criteria: 2, 
-  s_orientation: "COLUMNS", 
-  s_sort_order: "DESCENDING", 
-  s_threshold_search_dir: "DOWNWARD", 
-  s_threshold_start_dir: "ABOVE", 
-  s_threshold_end_dir: "BELOW", 
-  threshold_start: 0,
-  threshold_end: 1
+  s_sort_criteria: 2,
+  s_axis: "COLUMNS",
+  s_sort_order: "ASCENDING",
+  s_threshold_search_dir: "DOWNWARD",
+  s_threshold_start_dir: "ABOVE",
+  s_threshold_end_dir: "BELOW",
+  i_threshold_start: 0,
+  i_threshold_end: 1
 };
 
 var src_img = new Image();
@@ -21,100 +21,126 @@ trackTransforms(dst_ctx);
 
 var image_loaded = false;
 
-function threshold(pixels) {
+function findBounds(pixels) {
   var bounds = [-1, -1];
 
-  // Hax
-  if (options.s_threshold_search_dir == "UPWARD") { 
+  // Look from the end to the front
+  if (op.s_threshold_search_dir == "UPWARD") {
     pixels.reverse();
   }
 
   // Isolate values of the mode (H, S, or L)
   var mode_slice = pixels.map(
-    function(v) {
-      return v[options.s_sort_criteria]; 
-    });
+    function (v) { return v[op.s_sort_criteria]; });
 
-  // TODO(aelsen): this could be way more elegant
-  if (options.s_threshold_start_dir == "ABOVE") {
-    bounds[0] = thresholdGreaterThan(mode_slice, options.threshold_start);
-  } else if (options.s_threshold_start_dir == "BELOW") {
-    bounds[0] = thresholdLessThan(mode_slice, options.threshold_start);
+  bounds[0] = findThreshold(
+    mode_slice, op.i_threshold_start, op.s_threshold_start_dir);
+  bounded_slice = mode_slice.slice(bounds[0] + 1, mode_slice.length);
+  bounds[1] = bounds[0] + findThreshold(
+    bounded_slice, op.i_threshold_end, op.s_threshold_end_dir);
+
+  if (op.s_threshold_search_dir == "UPWARD") {
+    var swap = pixels.length - bounds[0]
+    bounds[0] = pixels.length - bounds[1];
+    bounds[1] = swap;
   }
-
-  if (bounds[0] == -1) { return bounds; }
-  bounded_slice = mode_slice.slice(bounds[0], mode_slice.length);
-
-  if (options.s_threshold_end_dir == "ABOVE") {
-    bounds[1] = thresholdGreaterThan(bounded_slice, options.threshold_end);
-  } else if (options.s_threshold_end_dir == "BELOW") {
-    bounds[1] = thresholdLessThan(bounded_slice, options.threshold_end);
-  }
-
-  // console.log(bounds);
-
-  var leading_axis = options.s_orientation == "COLUMNS" ? dst_cvs.height : dst_cvs.width;
-  if (options.s_threshold_search_dir == "UPWARD") { 
-    var temp = leading_axis - bounds[0]
-    bounds[0] = leading_axis - bounds[1];
-    bounds[1] = temp;
-  }
-
   return bounds;
 }
 
+function findThreshold(array, value, direction) {
+  var i = -1;
+  if (direction == "ABOVE") {
+    for (i = 0; i < array.length; i++) {
+      if (array[i] >= value) { return i; }
+    }
+  } else if (direction == "BELOW") {
+    for (i = 0; i < array.length; i++) {
+      if (array[i] <= value) { return i; }
+    }
+  }
+  return i;
+}
+
+function sortSlice(slice) {
+  // Show bounds
+  slice.sort(compareElement(op.s_sort_criteria));
+
+  if (op.s_threshold_search_dir == "UPWARD") {
+    slice.reverse();
+  }
+  if (op.s_sort_order == "DESCENDING") {
+    slice.reverse();
+  }
+  return slice;
+}
+
 function pixelsort(canvas, ctx) {
-  if (!options.image_loaded) { return; }
-  console.log("Sorting image with the following options:");
-  console.log("   toggle_mask: " + options.toggle_mask);
-  console.log("   s_sort_criteria: " + options.s_sort_criteria);
-  console.log("   s_orientation: " + options.s_orientation);
-  console.log("   s_sort_order: " + options.s_sort_order);
-  console.log("   s_threshold_search_dir: " + options.s_threshold_search_dir);
-  console.log("   s_threshold_start_dir: " + options.s_threshold_start_dir);
-  console.log("   s_threshold_end_dir: " + options.s_threshold_end_dir);
-  console.log("   threshold_start: " + options.threshold_start);
-  console.log("   threshold_end: " + options.threshold_end);
+  if (!op.image_loaded) { return; }
+  console.log("Sorting image with the following op:");
+  console.log("   toggle_mask: " + op.toggle_mask);
+  console.log("   s_sort_criteria: " + op.s_sort_criteria);
+  console.log("   s_axis: " + op.s_axis);
+  console.log("   s_sort_order: " + op.s_sort_order);
+  console.log("   s_threshold_search_dir: " + op.s_threshold_search_dir);
+  console.log("   s_threshold_start_dir: " + op.s_threshold_start_dir);
+  console.log("   s_threshold_end_dir: " + op.s_threshold_end_dir);
+  console.log("   i_threshold_start: " + op.i_threshold_start);
+  console.log("   i_threshold_end: " + op.i_threshold_end);
 
   load(canvas, ctx, src_img);
   var width = canvas.width;
   var height = canvas.height;
-  var lines = 0;
 
-  for (var c = 0; c < canvas.width; c++) {
-    var line_data = ctx.getImageData(c, 0, 1, canvas.height).data;
-    var line_hsla = data2HSLAArray(line_data);
+  var length, lines;
+  var r = 0, c = 0;
+  var width = 1, height = 1;
 
-    // Find bounds
-    var bounds = threshold(line_hsla);
-    var min = Math.min.apply(null, bounds);
-    // console.log("Bounds: " + bounds);
-    if (min < 0 || isNaN(min) || bounds[0] >= bounds[1]) {
-      // console.log("Could not find bounds for column " + c);
-      // console.log("Bounds: " + bounds);
-      continue;
-    }
-    lines++;
-
-    // Retrieve pixels within bounds
-    var slice_hsla = line_hsla.slice(bounds[0], bounds[1]);
-    
-    // Show bounds
-    if (options.toggle_mask) {
-      for (var i = 0; i < slice_hsla.length; i++) {
-        slice_hsla[i][0] = 100;
-      }
-    } else {
-      slice_hsla.sort(compare);
-    }
-
-    slice_data = HSLAArray2Data(slice_hsla);
-
-    var img = new ImageData(slice_data, 1, bounds[1] - bounds[0]);
-    ctx.putImageData(img, c, bounds[0]);
+  if (op.s_axis == "COLUMNS") {
+    length  = canvas.height;
+    lines = canvas.width;
+    height = length;
+  } else if (op.s_axis == "ROWS") {
+    length  = canvas.width;
+    lines = canvas.height;
+    width = length;
   }
 
-  console.log("Done: " + lines + " lines applied.");
+  var completed = 0;
+  for (var l = 0; l < length; l++) {
+    // Extract from canvas
+    var line_data = ctx.getImageData(c, r, width, height).data;
+    
+    // Convert to sortable pixel values
+    var line_pixels = data2HSLAArray(line_data);
+
+    // Find bounds
+    var bounds = findBounds(line_pixels);
+    var min = Math.min.apply(null, bounds);
+    if (min < 0 || isNaN(min) || bounds[0] >= bounds[1]) { continue; }
+
+    // Isolate slice from bounds
+    var slice = line_pixels.slice(bounds[0], bounds[1]);
+
+    // Sort
+    slice = sortSlice(slice);
+
+    // Convert back to data
+    slice_data = HSLAArray2Data(slice);
+    
+    // Place in image
+    if (op.s_axis == "COLUMNS") {
+      var img = new ImageData(slice_data, 1, bounds[1] - bounds[0]);
+      ctx.putImageData(img, c, bounds[0]);
+      c++; 
+
+    } else if (op.s_axis == "ROWS") {
+      var img = new ImageData(slice_data, bounds[1] - bounds[0], 1);
+      ctx.putImageData(img, bounds[0], r);
+      r++;
+    }
+    completed++;
+  }
+  console.log("Sorting complete: " + completed + " lines sorted.");
 }
 
 // $(".dropdown-toggle").dropdown();
@@ -126,7 +152,7 @@ function pickColor(e) {
   var rgba = data2RGBAArray(data)[0];
   var hsla = RGBA2HSLA(rgba);
 
-  var str_rgba = "RGBA(" + 
+  var str_rgba = "RGBA(" +
     rgba[0] + ", " + rgba[1] + ", " + rgba[2] + ", " + rgba[3] + ")"; // Ugh.
 
   $('#color_sample').css("background-color", str_rgba);
@@ -138,13 +164,13 @@ function pickColor(e) {
   $('#p_picker_l').text(hsla[2].toFixed(2));
 };
 
-function toggleImageButtons(state){
+function toggleImageButtons(state) {
   $("#btn_save").prop("disabled", state);
   $("#btn_clear").prop("disabled", state);
 }
 
 // GUI Callbacks
-function handleInput(e){
+function handleInput(e) {
   var id = e.target.id;
   pixelsort(src_cvs, src_ctx);
   redraw(dst_cvs, dst_ctx, src_cvs);
@@ -162,31 +188,31 @@ function btnLoad() {
   $('#input_image').trigger("click");
 }
 
-function inputLoad(e){
+function inputLoad(e) {
   var reader = new FileReader();
   reader.readAsDataURL(e.target.files[0]);
-  reader.onload = function(event){
+  reader.onload = function (event) {
     var img = new Image();
     img.src = event.target.result;
 
-    img.onload = function(){
+    img.onload = function () {
       src_img = this;
-      
+
       load(src_cvs, src_ctx, src_img);
 
       resizeCanvas(dst_cvs, src_img.width, src_img.height);
       redraw(dst_cvs, dst_ctx, src_cvs);
 
-      options.image_loaded = true;
-      toggleImageButtons(!options.image_loaded);
+      op.image_loaded = true;
+      toggleImageButtons(!op.image_loaded);
     }
   }
 }
 
 function btnSave() {
-  var a  = document.createElement('a');
+  var a = document.createElement('a');
   var src_cvs_href = src_cvs.toDataURL('image/png');
-  
+
   a.href = src_cvs_href;
   a.download = 'malfunction-output.png';
 
@@ -195,20 +221,20 @@ function btnSave() {
 }
 
 function btnClear() {
-  options.image_loaded = false;
+  op.image_loaded = false;
   src_ctx.clearRect(0, 0, src_cvs.width, src_cvs.height);
   dst_ctx.clearRect(0, 0, dst_cvs.width, dst_cvs.height);
-  toggleImageButtons(!options.image_loaded);
+  toggleImageButtons(!op.image_loaded);
 }
 
-var addEvent = function(object, type, callback) {
-  if (object == null || typeof(object) == 'undefined') return;
+var addEvent = function (object, type, callback) {
+  if (object == null || typeof (object) == 'undefined') return;
   if (object.addEventListener) {
-      object.addEventListener(type, callback, false);
+    object.addEventListener(type, callback, false);
   } else if (object.attachEvent) {
-      object.attachEvent("on" + type, callback);
+    object.attachEvent("on" + type, callback);
   } else {
-      object["on"+type] = callback;
+    object["on" + type] = callback;
   }
 };
 
@@ -221,25 +247,25 @@ $("#btn_save").on("click", btnSave);
 $("#btn_clear").on("click", btnClear);
 $("#input_image").on("change", inputLoad);
 
-$("#i_threshold_start").on("change", function(e) { options.threshold_start = e.target.value; });
-$("#i_threshold_end").on("change", function(e) { options.threshold_end= e.target.value; });
+$("#i_threshold_start").on("change", function (e) { op.i_threshold_start = e.target.value; });
+$("#i_threshold_end").on("change", function (e) { op.i_threshold_end = e.target.value; });
 
-$("#s_sort_orientation").on("change", function(e) { options.s_orientation= e.target.value; });
-$("#s_value_order").on("change", function(e) { options.s_sort_order = e.target.value; });
-$("#s_threshold_search_dir").on("change", function(e) { options.s_threshold_search_dir= e.target.value; });
-$("#s_threshold_start_dir").on("change", function(e) { options.s_threshold_start_dir= e.target.value; });
-$("#s_threshold_end_dir").on("change", function(e) { options.s_threshold_end_dir= e.target.value; });
+$("#s_sort_orientation").on("change", function (e) { op.s_axis = e.target.value; });
+$("#s_value_order").on("change", function (e) { op.s_sort_order = e.target.value; });
+$("#s_threshold_search_dir").on("change", function (e) { op.s_threshold_search_dir = e.target.value; });
+$("#s_threshold_start_dir").on("change", function (e) { op.s_threshold_start_dir = e.target.value; });
+$("#s_threshold_end_dir").on("change", function (e) { op.s_threshold_end_dir = e.target.value; });
 
-$("#toggle-mask").on("click", function(e) { 
-  options.toggle_mask = (e.target.getAttribute("aria-pressed") === "false"); // TODO: what?
-  var text = options.toggle_mask ? "ON" : "OFF";
+$("#toggle-mask").on("click", function (e) {
+  op.toggle_mask = (e.target.getAttribute("aria-pressed") === "false"); // TODO: what?
+  var text = op.toggle_mask ? "ON" : "OFF";
   $("#toggle-mask").text(text);
 });
 
-$("#s_sort_criteria").on("change", function(e) { 
+$("#s_sort_criteria").on("change", function (e) {
   // TODO(aelsen): Dictionary.
   var mode = 2;
-  switch(e.target.value) {
+  switch (e.target.value) {
     case "HUE":
       mode = 0;
       break;
@@ -250,7 +276,9 @@ $("#s_sort_criteria").on("change", function(e) {
       mode = 2;
       break;
   }
-  options.s_sort_criteria = mode; 
+  op.s_sort_criteria = mode;
+
+  // TODO(aelsen): Change inputs and their bounds as necessary.
 });
 
 

@@ -1,31 +1,33 @@
+// Math
 function compare(a, b) {
-  var i = options.s_sort_criteria;
   if (a[i] === b[i]) {
       return 0;
   }
   else {
-    if (options.s_sort_order == "ASCENDING") {
+    return (a[i] < b[i]) ? -1 : 1;
+  }
+}
+
+function compareElement(i) {
+  return function(a, b) {
+    if (a[i] === b[i]) {
+      return 0;
+    }
+    else {
       return (a[i] < b[i]) ? -1 : 1;
-    } else if (options.s_sort_order == "DESCENDING") {
-      return (a[i] < b[i]) ? 1 : -1;
     }
   }
 }
 
-// TODO(aelsen): Works, but so clunky.
-function thresholdGreaterThan(array, threshold){
-  for (var i = 0; i < array.length; i++) {
-    if (array[i] >= threshold) {return i;}
-  }
-  return -1;
+function scaleFactor(src_width, src_height, dest_width, dest_height){
+  // Calculates a scaling factor to shrink the image.
+  //  The factor is based on the orientation which
+  //  is closest to the desired (dest) size.
+  var factor = Math.min(
+      (dest_width / src_width), 
+      (dest_height / src_height));
+  return factor;
 }
-function thresholdLessThan(array, threshold){
-  for (var i = 0; i < array.length; i++) {
-    if (array[i] <= threshold) {return i;}
-  }
-  return -1;
-}
-
 
 // Color Operations
 function data2HSLAArray(data) {
@@ -72,7 +74,6 @@ function RGBAArray2HSLAArray(rgba) {
   }
   return hsla;
 }
-
 
 var HUE2RGB = function HUE2RGB(p, q, h){
   if(h < 0) h += 1;
@@ -125,18 +126,4 @@ function RGBA2HSLA(rgba) {
     h *= 60;
   }
   return [h, s, l, a];
-}
-
-function calculateScalingFactor(src_width, src_height, dest_width, dest_height){
-  // Calculates a scaling factor to shrink the image.
-  //  The factor is based on the orientation which
-  //  is closest to the desired (dest) size.
-  //  Does not expand.
-  var factor = Math.min(
-      (dest_width / src_width), 
-      (dest_height / src_height));
-  console.log("Width: " + (dest_width / src_width));
-  console.log("Height: " + (dest_height / src_height));
-  console.log("Factor: " + factor);
-  return factor;
 }
