@@ -19,7 +19,7 @@ hr {
 /*  bootstrap overrides */
 
 .brand {
-    color: #8bffc1;
+    color: #95ffa7;
     font-family: 'Monda', sans-serif;
     font-size: 1.75rem;
     margin: 20px 0px 20px 0px;
@@ -86,7 +86,7 @@ hr {
 }
 
 .sidebar .btn.active {
-    background-color: rgb(133, 179, 133);
+    background-color: #95ffa7;
     color: #452632;
 }
 
