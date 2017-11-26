@@ -21,6 +21,24 @@ trackTransforms(dst_ctx);
 
 var image_loaded = false;
 
+function findThreshold(array, value, direction) {
+  var i = -1;
+  if (direction == "ABOVE") {
+    for (i = 0; i < array.length; i++) {
+      if (array[i] >= value) {  return i; }
+    }
+  } else if (direction == "BELOW") {
+    for (i = 0; i < array.length; i++) {
+      if (array[i] <= value) {  return i; }
+    }
+  } else {
+    console.log("ERR: Invalid direction.");
+    return -1;
+  }
+  return -1;
+}
+
+
 function findBounds(pixels) {
   var bounds = [-1, -1];
 
@@ -35,6 +53,8 @@ function findBounds(pixels) {
 
   bounds[0] = findThreshold(
     mode_slice, op.i_threshold_start, op.s_threshold_start_dir);
+  if (bounds[0] == -1) { return bounds; }
+
   bounded_slice = mode_slice.slice(bounds[0] + 1, mode_slice.length);
   bounds[1] = bounds[0] + findThreshold(
     bounded_slice, op.i_threshold_end, op.s_threshold_end_dir);
@@ -45,20 +65,6 @@ function findBounds(pixels) {
     bounds[1] = swap;
   }
   return bounds;
-}
-
-function findThreshold(array, value, direction) {
-  var i = -1;
-  if (direction == "ABOVE") {
-    for (i = 0; i < array.length; i++) {
-      if (array[i] >= value) { return i; }
-    }
-  } else if (direction == "BELOW") {
-    for (i = 0; i < array.length; i++) {
-      if (array[i] <= value) { return i; }
-    }
-  }
-  return i;
 }
 
 function sortSlice(slice) {
@@ -87,60 +93,66 @@ function pixelsort(canvas, ctx) {
   console.log("   i_threshold_start: " + op.i_threshold_start);
   console.log("   i_threshold_end: " + op.i_threshold_end);
 
+  var start = Date.now();
+
   load(canvas, ctx, src_img);
   var width = canvas.width;
   var height = canvas.height;
 
-  var length, lines;
-  var r = 0, c = 0;
-  var width = 1, height = 1;
+  var length; var lines;
+  var r = 0; var c = 0;
+  var width = 1; var height = 1;
 
   if (op.s_axis == "COLUMNS") {
-    length  = canvas.height;
+    length = canvas.height;
     lines = canvas.width;
     height = length;
   } else if (op.s_axis == "ROWS") {
-    length  = canvas.width;
+    length = canvas.width;
     lines = canvas.height;
     width = length;
   }
 
   var completed = 0;
-  for (var l = 0; l < length; l++) {
+  for (var l = 0; l < lines; l++) {
     // Extract from canvas
     var line_data = ctx.getImageData(c, r, width, height).data;
     
     // Convert to sortable pixel values
     var line_pixels = data2HSLAArray(line_data);
+    // console.log(line_data);
+    // console.log(line_pixels);
 
     // Find bounds
     var bounds = findBounds(line_pixels);
+    // console.log(bounds);
     var min = Math.min.apply(null, bounds);
-    if (min < 0 || isNaN(min) || bounds[0] >= bounds[1]) { continue; }
-
-    // Isolate slice from bounds
-    var slice = line_pixels.slice(bounds[0], bounds[1]);
-
-    // Sort
-    slice = sortSlice(slice);
-
-    // Convert back to data
-    slice_data = HSLAArray2Data(slice);
+    if (min >= 0 && bounds[0] < bounds[1]) {  
     
-    // Place in image
-    if (op.s_axis == "COLUMNS") {
-      var img = new ImageData(slice_data, 1, bounds[1] - bounds[0]);
-      ctx.putImageData(img, c, bounds[0]);
-      c++; 
+      // Isolate slice from bounds
+      var slice = line_pixels.slice(bounds[0], bounds[1]);
 
-    } else if (op.s_axis == "ROWS") {
-      var img = new ImageData(slice_data, bounds[1] - bounds[0], 1);
-      ctx.putImageData(img, bounds[0], r);
-      r++;
+      // Sort
+      slice = sortSlice(slice);
+
+      // Convert back to data
+      slice_data = HSLAArray2Data(slice);
+      
+      // Place in image
+      if (op.s_axis == "COLUMNS") {
+        var img = new ImageData(slice_data, 1, bounds[1] - bounds[0]);
+        ctx.putImageData(img, c, bounds[0]);
+      } else if (op.s_axis == "ROWS") {
+        var img = new ImageData(slice_data, bounds[1] - bounds[0], 1);
+        ctx.putImageData(img, bounds[0], r);
+      } 
+      completed++;
     }
-    completed++;
+    if (op.s_axis == "COLUMNS") {c++;} else if (op.s_axis == "ROWS") {r++;} 
   }
-  console.log("Sorting complete: " + completed + " lines sorted.");
+
+  var elapsed = (Date.now() - start) / 1000.0;
+  console.log("Sorting complete: " + completed + " / " + lines + " lines sorted in " + elapsed + " seconds.");
 }
 
 // $(".dropdown-toggle").dropdown();
@@ -250,7 +262,7 @@ $("#input_image").on("change", inputLoad);
 $("#i_threshold_start").on("change", function (e) { op.i_threshold_start = e.target.value; });
 $("#i_threshold_end").on("change", function (e) { op.i_threshold_end = e.target.value; });
 
-$("#s_sort_orientation").on("change", function (e) { op.s_axis = e.target.value; });
+$("#s_axis").on("change", function (e) { op.s_axis = e.target.value; });
 $("#s_value_order").on("change", function (e) { op.s_sort_order = e.target.value; });
 $("#s_threshold_search_dir").on("change", function (e) { op.s_threshold_search_dir = e.target.value; });
 $("#s_threshold_start_dir").on("change", function (e) { op.s_threshold_start_dir = e.target.value; });
@@ -284,3 +296,6 @@ $("#s_sort_criteria").on("change", function (e) {
 
 $(".ctrl").on("change", handleInput);
 $("#toggle-mask").on("click", handleInput);
+
+
+

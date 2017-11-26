@@ -1,10 +1,10 @@
 // Math
 function compare(a, b) {
-  if (a[i] === b[i]) {
+  if (a === b) {
       return 0;
   }
   else {
-    return (a[i] < b[i]) ? -1 : 1;
+    return (a < b) ? -1 : 1;
   }
 }
 
@@ -31,7 +31,8 @@ function scaleFactor(src_width, src_height, dest_width, dest_height){
 
 // Color Operations
 function data2HSLAArray(data) {
-  var hsla = RGBAArray2HSLAArray( data2RGBAArray(data) );
+  var rgba = data2RGBAArray(data);
+  var hsla = RGBAArray2HSLAArray(rgba);
   return hsla;
 }
 
@@ -119,9 +120,15 @@ function RGBA2HSLA(rgba) {
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
 
     switch(max){
-        case r: h = ((g - b) / d) % 6 ; break;
-        case g: h = (b - r) / d + 2; break;
-        case b: h = (r - g) / d + 4; break;
+        case r: 
+          h = ((g - b) / d) + (g < b ? 6 : 0); 
+          break;
+        case g: 
+          h = (b - r) / d + 2; 
+          break;
+        case b: 
+          h = (r - g) / d + 4; 
+          break;
     }
     h *= 60;
   }
