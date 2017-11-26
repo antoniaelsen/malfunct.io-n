@@ -231,13 +231,15 @@ function inputLoad(e) {
 
 function btnSave() {
   var a = document.createElement('a');
-  var src_cvs_href = src_cvs.toDataURL('image/png');
 
-  a.href = src_cvs_href;
-  a.download = 'malfunction-output.png';
+  function saveImage(blob) {
+    a.download = 'malfunction-output.png';
+    a.href = window.URL.createObjectURL(blob);
+    a.click();
+    a.remove();
+  }
 
-  a.click();
-  a.remove();
+  var blob = src_cvs.toBlob(saveImage);
 }
 
 function btnClear() {
