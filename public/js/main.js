@@ -137,15 +137,25 @@ function pixelsort(canvas, ctx) {
 
       // Convert back to data
       slice_data = HSLAArray2Data(slice);
+
       
-      // Place in image
+      // Determine coordinates
+      var x = 0; var y = 0;
+      var w = 1; var h = 1;
       if (op.s_axis == "COLUMNS") {
-        var img = new ImageData(slice_data, 1, bounds[1] - bounds[0]);
-        ctx.putImageData(img, c, bounds[0]);
+        x = c; y = bounds[0]; h = bounds[1] - bounds[0];
       } else if (op.s_axis == "ROWS") {
-        var img = new ImageData(slice_data, bounds[1] - bounds[0], 1);
-        ctx.putImageData(img, bounds[0], r);
+        x = bounds[0]; y = r; w = bounds[1] - bounds[0];
       } 
+
+      if (op.toggle_mask) {
+        ctx.fillStyle = "rgba(0, 255, 0, .33)";
+        ctx.fillRect(x, y, w, h);
+      } else {
+        var img = new ImageData(slice_data, w, h);
+        ctx.putImageData(img, x, y);
+      }
+
       completed++;
     }
     if (op.s_axis == "COLUMNS") {c++;} else if (op.s_axis == "ROWS") {r++;} 
@@ -154,8 +164,6 @@ function pixelsort(canvas, ctx) {
   var elapsed = (Date.now() - start) / 1000.0;
   console.log("Sorting complete: " + completed + " / " + lines + " lines sorted in " + elapsed + " seconds.");
 }
-
-// $(".dropdown-toggle").dropdown();
 
 function pickColor(e) {
   var x = event.layerX;
