@@ -41,14 +41,15 @@ function findThreshold(array, value, direction) {
 
 function findBounds(pixels) {
   var bounds = [-1, -1];
+  var line = pixels.slice();
 
   // Look from the end to the front
   if (op.s_threshold_search_dir == "UPWARD") {
-    pixels.reverse();
+    line.reverse();
   }
 
   // Isolate values of the mode (H, S, or L)
-  var mode_slice = pixels.map(
+  var mode_slice = line.map(
     function (v) { return v[op.s_sort_criteria]; });
 
   bounds[0] = findThreshold(
@@ -60,9 +61,9 @@ function findBounds(pixels) {
     bounded_slice, op.i_threshold_end, op.s_threshold_end_dir);
 
   if (op.s_threshold_search_dir == "UPWARD") {
-    var swap = pixels.length - bounds[0]
-    bounds[0] = pixels.length - bounds[1];
-    bounds[1] = swap;
+    bounds[0] = line.length - bounds[0];
+    bounds[1] = line.length - bounds[1];
+    bounds.reverse();
   }
   return bounds;
 }
@@ -120,24 +121,23 @@ function pixelsort(canvas, ctx) {
     
     // Convert to sortable pixel values
     var line_pixels = data2HSLAArray(line_data);
-    // console.log(line_data);
-    // console.log(line_pixels);
 
     // Find bounds
     var bounds = findBounds(line_pixels);
-    // console.log(bounds);
+    if (l > 400 && l < 405) { console.log(bounds); }
+    
     var min = Math.min.apply(null, bounds);
     if (min >= 0 && bounds[0] < bounds[1]) {  
     
       // Isolate slice from bounds
-      var slice = line_pixels.slice(bounds[0], bounds[1]);
+      if (l > 400 && l < 405) { console.log("Slicing " + bounds[0] + " to " + bounds[1]); }
+      var slice_pixels = line_pixels.slice(bounds[0], bounds[1]);
 
       // Sort
-      slice = sortSlice(slice);
+      slice_pixels = sortSlice(slice_pixels);
 
       // Convert back to data
-      slice_data = HSLAArray2Data(slice);
-
+      slice_data = HSLAArray2Data(slice_pixels);
       
       // Determine coordinates
       var x = 0; var y = 0;
@@ -191,7 +191,6 @@ function toggleImageButtons(state) {
 
 // GUI Callbacks
 function handleInput(e) {
-  var id = e.target.id;
   pixelsort(src_cvs, src_ctx);
   redraw(dst_cvs, dst_ctx, src_cvs);
 }
@@ -304,8 +303,7 @@ $("#s_sort_criteria").on("change", function (e) {
 });
 
 
-$(".ctrl").on("change", handleInput);
-$("#toggle-mask").on("click", handleInput);
+$("#btn_sort").on("click", handleInput);
 
 
 

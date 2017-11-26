@@ -152,7 +152,7 @@
                                             <option>BELOW</option>
                                         </select>
                                         <div class="col-3 pr-0">
-                                            <input type="number" class="custom-form ctrl" id="i_threshold_start" step="0.00001" min="0" max="255" placeholder=".8">
+                                            <input type="number" class="custom-form ctrl" id="i_threshold_start" step="0.01" min="0" max="255" placeholder=".8">
                                         </div>
                                     </div>
                                 </li>
@@ -164,13 +164,16 @@
                                             <option>ABOVE</option>
                                         </select>
                                         <div class="col-3 pr-0">
-                                            <input type="number" class="custom-form ctrl" id="i_threshold_end" step="0.00001" min="0" max="255" placeholder=".2">
+                                            <input type="number" class="custom-form ctrl" id="i_threshold_end" step="0.01" min="0" max="255" placeholder=".2">
                                         </div>
                                     </div>
                                 </li>
+                                <li class="flex-sm-fill text-center nav-item">
+                                    <button class="btn btn-block" id="btn_sort">SORT</button>
+                                </li>
                             </ul>
-                        </div>
-                    </div>
+                        </div> <!-- card -->
+                    </div> <!-- collapse -->
                 </div>
             </div> <!-- accordion  -->
         </ul>
