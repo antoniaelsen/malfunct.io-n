@@ -10,50 +10,9 @@ Antonia Elsen
 
 ## Design
 
-### Future Work
-- Canvas Improvements
-  - Zoom and pan, with scrolling
-  - Selectable regions
-    - Whole rows / columns
-    - Rectangles
-  - Multiple images
-- Additional Filters
-  - Databending (audio / frequency)
-  - Chunking and overlaying
-- General Appearance
-  - Logo
-  - Background color update wrt uploaded image
-
-  
-### DOM Structure  
-- Canvas
-- Navbar
-  - Logo
-  - About 
-  - Image Controls
-    - Load
-    - Save
-    - Clear
-  - Filter Controls
-    - [Filter Controls]
-    - Tab: Filter Select
-  
-#### Filter Controls:  
-Pixelsorting
-- Mode
-  - Luminosity
-  - Hue
-- Sort Orientation
-  - Vertical
-  - Horizontal
-- Sort Direction
-  - Ascending
-  - Descending
-- Threshold Mode
-  - Luminosity
-  - Hue
-- Threshold Max
-- Threshold MIn
+## Future Work
+For future work and bugfixes, see this repo's [issue tracker](https://github.com/aelsen/malfunct.ion/issues).
 
 ### Sources
 [HTML5 Zoom and Pan Canvas - CodePen](https://codepen.io/techslides/pen/zowLd)
+[HSL x RGB Color Conversion - Stack Overflow](https://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion)
