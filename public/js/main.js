@@ -15,9 +15,12 @@ var src_img = new Image();
 var src_cvs = document.getElementById('src_cvs');
 var src_ctx = src_cvs.getContext("2d");
 var dst_cvs_wrapper = document.getElementById('dst_cvs_wrapper');
-var dst_cvs = document.getElementById('dst_cvs');
-var dst_ctx = dst_cvs.getContext("2d");
-trackTransforms(dst_ctx);
+var dst_cvs_container = document.getElementById('canvas_container');
+var dst_cvs = new Gesso();
+addZoomPanListeners(dst_cvs);
+console.log(dst_cvs);
+console.log(dst_cvs.canvas);
+dst_cvs_container.appendChild(dst_cvs.canvas); // TODO
 
 var image_loaded = false;
 
@@ -31,10 +34,7 @@ function findThreshold(array, value, direction) {
     for (i = 0; i < array.length; i++) {
       if (array[i] <= value) {  return i; }
     }
-  } else {
-    console.log("ERR: Invalid direction.");
-    return -1;
-  }
+  } 
   return -1;
 }
 
@@ -96,7 +96,7 @@ function pixelsort(canvas, ctx) {
 
   var start = Date.now();
 
-  load(canvas, ctx, src_img);
+  dst_cvs.load(src_img);
   var width = canvas.width;
   var height = canvas.height;
 
@@ -168,7 +168,7 @@ function pixelsort(canvas, ctx) {
 function pickColor(e) {
   var x = event.layerX;
   var y = event.layerY;
-  var data = dst_ctx.getImageData(x, y, 1, 1).data;
+  var data = dst_cvs.ctx.getImageData(x, y, 1, 1).data;
   var rgba = data2RGBAArray(data)[0];
   var hsla = RGBA2HSLA(rgba);
 
@@ -192,7 +192,7 @@ function toggleImageButtons(state) {
 // GUI Callbacks
 function handleInput(e) {
   pixelsort(src_cvs, src_ctx);
-  redraw(dst_cvs, dst_ctx, src_cvs);
+  dst_cvs.redraw
 }
 
 function resize() {
@@ -200,7 +200,7 @@ function resize() {
   // var ch = dst_cvs_wrapper.offsetHeight;
 
   // resizeCanvas(dst_cvs, cw, ch);
-  // redraw(dst_cvs, dst_ctx, src_cvs);
+  // redraw(dst_cvs, dst_cvs.ctx, src_cvs);
 }
 
 function btnLoad() {
@@ -217,10 +217,10 @@ function inputLoad(e) {
     img.onload = function () {
       src_img = this;
 
-      load(src_cvs, src_ctx, src_img);
+      dst_cvs.resize(src_img.width, src_img.height);
+      dst_cvs.load(src_img);
 
-      resizeCanvas(dst_cvs, src_img.width, src_img.height);
-      redraw(dst_cvs, dst_ctx, src_cvs);
+      // redraw(dst_cvs, dst_cvs.ctx, src_cvs);
 
       op.image_loaded = true;
       toggleImageButtons(!op.image_loaded);
@@ -244,9 +244,11 @@ function btnSave() {
 function btnClear() {
   op.image_loaded = false;
   src_ctx.clearRect(0, 0, src_cvs.width, src_cvs.height);
-  dst_ctx.clearRect(0, 0, dst_cvs.width, dst_cvs.height);
+  dst_cvs.clear();
   toggleImageButtons(!op.image_loaded);
 }
+
+
 
 var addEvent = function (object, type, callback) {
   if (object == null || typeof (object) == 'undefined') return;
@@ -261,7 +263,7 @@ var addEvent = function (object, type, callback) {
 
 // Bindings
 addEvent(window, "resize", resize);
-dst_cvs.addEventListener('mousemove', pickColor);
+dst_cvs.canvas.addEventListener('mousemove', pickColor);
 
 $("#btn_load").on("click", btnLoad);
 $("#btn_save").on("click", btnSave);
