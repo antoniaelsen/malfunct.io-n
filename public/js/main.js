@@ -1,5 +1,5 @@
 var op = {
-  toggle_mask: false,
+  toggle_stage_mask: false,
   s_replace: "REPLACE",
   s_sort_criteria: 2,
   s_axis: "COLUMNS",
@@ -11,16 +11,26 @@ var op = {
   i_threshold_end: 1
 };
 
-var src_img = new Image();
-var src_cvs = document.getElementById('src_cvs');
-var src_ctx = src_cvs.getContext("2d");
-var dst_cvs_wrapper = document.getElementById('dst_cvs_wrapper');
-var dst_cvs_container = document.getElementById('canvas_container');
-var dst_cvs = new Gesso();
-addZoomPanListeners(dst_cvs);
-console.log(dst_cvs);
-console.log(dst_cvs.canvas);
-dst_cvs_container.appendChild(dst_cvs.canvas); // TODO
+var crs_x = 0, crs_y = 0;
+var crs_drag, dragged;
+
+var canvas_wrapper = document.getElementById('canvas_wrapper');
+var canvas_container = document.getElementById('canvas_container');
+
+var stage_editor = new Gesso();
+var stage_mask = new Gesso();
+var offscreen_editor = new Gesso();
+var offscreen_mask = new Gesso();
+stage_editor.canvas.setAttribute("id", "stage_editor");
+stage_mask.canvas.setAttribute("id", "stage_mask");
+stage_mask.canvas.setAttribute("class", "col col-auto");
+stage_mask.canvas.setAttribute("style", "display: none; pointer-events: none; position: absolute; left: 0px; z-index: 2000;");
+// offscreen_editor.canvas.setAttribute("style", "display: none;");
+// offscreen_mask.canvas.setAttribute("style", "display: none;");
+canvas_container.appendChild(stage_editor.canvas);
+canvas_container.appendChild(stage_mask.canvas);
+// document.body.appendChild(offscreen_editor.canvas);
+// document.body.appendChild(offscreen_mask.canvas);
 
 var image_loaded = false;
 
@@ -37,7 +47,6 @@ function findThreshold(array, value, direction) {
   } 
   return -1;
 }
-
 
 function findBounds(pixels) {
   var bounds = [-1, -1];
@@ -81,10 +90,10 @@ function sortSlice(slice) {
   return slice;
 }
 
-function pixelsort(canvas, ctx) {
+function pixelsort() {
   if (!op.image_loaded) { return; }
   console.log("Sorting image with the following op:");
-  console.log("   toggle_mask: " + op.toggle_mask);
+  console.log("   toggle_stage_mask: " + op.toggle_stage_mask);
   console.log("   s_sort_criteria: " + op.s_sort_criteria);
   console.log("   s_axis: " + op.s_axis);
   console.log("   s_sort_order: " + op.s_sort_order);
@@ -93,44 +102,40 @@ function pixelsort(canvas, ctx) {
   console.log("   s_threshold_end_dir: " + op.s_threshold_end_dir);
   console.log("   i_threshold_start: " + op.i_threshold_start);
   console.log("   i_threshold_end: " + op.i_threshold_end);
-
   var start = Date.now();
 
-  dst_cvs.load(src_img);
-  var width = canvas.width;
-  var height = canvas.height;
+  stage_editor.clear();
+  stage_mask.clear();
+  offscreen_mask.clear();
+  offscreen_editor.redraw();
 
+  var cwidth = offscreen_editor.width;
+  var cheight = offscreen_editor.height;
   var length; var lines;
   var r = 0; var c = 0;
-  var width = 1; var height = 1;
+  var lwidth = 1; var lheight = 1;
+  var completed = 0;
 
   if (op.s_axis == "COLUMNS") {
-    length = canvas.height;
-    lines = canvas.width;
-    height = length;
+    length = cheight; lines = cwidth; lheight = length;
   } else if (op.s_axis == "ROWS") {
-    length = canvas.width;
-    lines = canvas.height;
-    width = length;
+    length = cwidth; lines = cheight; lwidth = length;
   }
-
-  var completed = 0;
+  
   for (var l = 0; l < lines; l++) {
     // Extract from canvas
-    var line_data = ctx.getImageData(c, r, width, height).data;
+    var line_data = offscreen_editor.ctx.getImageData(c, r, lwidth, lheight).data;
     
     // Convert to sortable pixel values
     var line_pixels = data2HSLAArray(line_data);
 
     // Find bounds
     var bounds = findBounds(line_pixels);
-    if (l > 400 && l < 405) { console.log(bounds); }
     
     var min = Math.min.apply(null, bounds);
     if (min >= 0 && bounds[0] < bounds[1]) {  
     
       // Isolate slice from bounds
-      if (l > 400 && l < 405) { console.log("Slicing " + bounds[0] + " to " + bounds[1]); }
       var slice_pixels = line_pixels.slice(bounds[0], bounds[1]);
 
       // Sort
@@ -148,13 +153,10 @@ function pixelsort(canvas, ctx) {
         x = bounds[0]; y = r; w = bounds[1] - bounds[0];
       } 
 
-      if (op.toggle_mask) {
-        ctx.fillStyle = "rgba(0, 255, 0, .33)";
-        ctx.fillRect(x, y, w, h);
-      } else {
-        var img = new ImageData(slice_data, w, h);
-        ctx.putImageData(img, x, y);
-      }
+      offscreen_mask.ctx.fillStyle = "rgba(0, 255, 0, .33)";
+      offscreen_mask.ctx.fillRect(x, y, w, h);
+      var img = new ImageData(slice_data, w, h);
+      offscreen_editor.ctx.putImageData(img, x, y);
 
       completed++;
     }
@@ -168,7 +170,7 @@ function pixelsort(canvas, ctx) {
 function pickColor(e) {
   var x = event.layerX;
   var y = event.layerY;
-  var data = dst_cvs.ctx.getImageData(x, y, 1, 1).data;
+  var data = stage_editor.ctx.getImageData(x, y, 1, 1).data;
   var rgba = data2RGBAArray(data)[0];
   var hsla = RGBA2HSLA(rgba);
 
@@ -184,30 +186,38 @@ function pickColor(e) {
   $('#p_picker_l').text(hsla[2].toFixed(2));
 };
 
-function toggleImageButtons(state) {
-  $("#btn_save").prop("disabled", state);
-  $("#btn_clear").prop("disabled", state);
-}
-
 // GUI Callbacks
-function handleInput(e) {
-  pixelsort(src_cvs, src_ctx);
-  dst_cvs.redraw
-}
-
-function resize() {
-  // var cw = dst_cvs_wrapper.offsetWidth;
-  // var ch = dst_cvs_wrapper.offsetHeight;
-
-  // resizeCanvas(dst_cvs, cw, ch);
-  // redraw(dst_cvs, dst_cvs.ctx, src_cvs);
+function btnClear() {
+  op.image_loaded = false;
+  stage_editor.clear();
+  stage_mask.clear();
+  offscreen_editor.clear();
+  offscreen_mask.clear();
+  toggleImageButtons(!op.image_loaded);
 }
 
 function btnLoad() {
   $('#input_image').trigger("click");
 }
 
-function inputLoad(e) {
+function btnSave() {
+  var a = document.createElement('a');
+  function saveImage(blob) {
+    a.download = 'malfunction-output.png';
+    a.href = window.URL.createObjectURL(blob);
+    a.click();
+    a.remove();
+  }
+  var blob = offscreen_editor.canvas.toBlob(saveImage);
+}
+
+function handleInput(e) {
+  pixelsort();
+  stage_editor.redraw(offscreen_editor.canvas);
+  stage_mask.redraw(offscreen_mask.canvas);
+}
+
+function handleLoad(e) {
   var reader = new FileReader();
   reader.readAsDataURL(e.target.files[0]);
   reader.onload = function (event) {
@@ -217,10 +227,12 @@ function inputLoad(e) {
     img.onload = function () {
       src_img = this;
 
-      dst_cvs.resize(src_img.width, src_img.height);
-      dst_cvs.load(src_img);
-
-      // redraw(dst_cvs, dst_cvs.ctx, src_cvs);
+      stage_mask.resize(src_img.width, src_img.height);
+      stage_editor.resize(src_img.width, src_img.height);
+      offscreen_editor.resize(src_img.width, src_img.height);
+      offscreen_mask.resize(src_img.width, src_img.height);
+      stage_editor.load(src_img);
+      offscreen_editor.load(src_img);
 
       op.image_loaded = true;
       toggleImageButtons(!op.image_loaded);
@@ -228,27 +240,19 @@ function inputLoad(e) {
   }
 }
 
-function btnSave() {
-  var a = document.createElement('a');
-
-  function saveImage(blob) {
-    a.download = 'malfunction-output.png';
-    a.href = window.URL.createObjectURL(blob);
-    a.click();
-    a.remove();
+var handleScroll = function(evt){
+  var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;
+  if (delta) {
+    stage_editor.zoom(null, delta, crs_x, crs_y);
+    stage_mask.zoom(null, delta, crs_x, crs_y);
   }
+  return evt.preventDefault() && false;
+};
 
-  var blob = src_cvs.toBlob(saveImage);
+function toggleImageButtons(state) {
+  $("#btn_save").prop("disabled", state);
+  $("#btn_clear").prop("disabled", state);
 }
-
-function btnClear() {
-  op.image_loaded = false;
-  src_ctx.clearRect(0, 0, src_cvs.width, src_cvs.height);
-  dst_cvs.clear();
-  toggleImageButtons(!op.image_loaded);
-}
-
-
 
 var addEvent = function (object, type, callback) {
   if (object == null || typeof (object) == 'undefined') return;
@@ -262,13 +266,14 @@ var addEvent = function (object, type, callback) {
 };
 
 // Bindings
-addEvent(window, "resize", resize);
-dst_cvs.canvas.addEventListener('mousemove', pickColor);
+stage_editor.canvas.addEventListener('mousemove', pickColor);
 
+$("#input_image").on("change", handleLoad);
 $("#btn_load").on("click", btnLoad);
 $("#btn_save").on("click", btnSave);
 $("#btn_clear").on("click", btnClear);
-$("#input_image").on("change", inputLoad);
+$("#btn_sort").on("click", handleInput);
+
 
 $("#i_threshold_start").on("change", function (e) { op.i_threshold_start = e.target.value; });
 $("#i_threshold_end").on("change", function (e) { op.i_threshold_end = e.target.value; });
@@ -279,10 +284,11 @@ $("#s_threshold_search_dir").on("change", function (e) { op.s_threshold_search_d
 $("#s_threshold_start_dir").on("change", function (e) { op.s_threshold_start_dir = e.target.value; });
 $("#s_threshold_end_dir").on("change", function (e) { op.s_threshold_end_dir = e.target.value; });
 
-$("#toggle-mask").on("click", function (e) {
-  op.toggle_mask = (e.target.getAttribute("aria-pressed") === "false"); // TODO: what?
-  var text = op.toggle_mask ? "ON" : "OFF";
-  $("#toggle-mask").text(text);
+$("#toggle_mask").on("click", function (e) {
+  op.toggle_stage_mask = (e.target.getAttribute("aria-pressed") === "false"); // TODO: what?
+  var text = op.toggle_stage_mask ? "ON" : "OFF";
+  $("#toggle_mask").text(text);
+  $("#stage_mask").toggle();
 });
 
 $("#s_sort_criteria").on("change", function (e) {
@@ -304,8 +310,30 @@ $("#s_sort_criteria").on("change", function (e) {
   // TODO(aelsen): Change inputs and their bounds as necessary.
 });
 
+stage_editor.canvas.addEventListener('mousedown', function(evt) {
+  document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
+  crs_x = evt.offsetX || (evt.pageX - stage_editor.canvas.offsetLeft);
+  crs_y = evt.offsetY || (evt.pageY - stage_editor.canvas.offsetTop);
+  crs_drag = stage_editor.ctx.transformedPoint(crs_x, crs_y);
+  dragged = false;
+}, false);
 
-$("#btn_sort").on("click", handleInput);
+stage_editor.canvas.addEventListener('mousemove', function(evt) {
+  crs_x = evt.offsetX || (evt.pageX - stage_editor.canvas.offsetLeft);
+  crs_y = evt.offsetY || (evt.pageY - stage_editor.canvas.offsetTop);
+  dragged = true;
+  if (crs_drag){
+    stage_editor.pan(offscreen_editor.canvas, crs_x, crs_y, crs_drag.x, crs_drag.y);
+    stage_mask.pan(offscreen_mask.canvas, crs_x, crs_y, crs_drag.x, crs_drag.y)
+  }
+}, false);
 
+stage_editor.canvas.addEventListener('mouseup', function(evt) {
+  crs_drag = null;
+  if (!dragged) {
+    stage_editor.zoom(offscreen_editor.canvas, evt.shiftKey ? -1 : 1, crs_x, crs_y );
+    stage_mask.zoom(offscreen_mask.canvas, evt.shiftKey ? -1 : 1, crs_x, crs_y );
+  }
+}, false);
 
 

@@ -91,7 +91,7 @@ hr {
 
 .sidebar .btn.active {
     background-color: #95ffa7;
-    color: #452632;
+    color: #0a1431;
 }
 
 .sidebar .btn:focus {
@@ -196,17 +196,27 @@ hr {
 
 .color_picker p{
     color: #222;
-    font-size: 1rem;
+    font-size: .8rem;
     margin-top: .5rem;
     margin-bottom: .5rem;
     text-align: right;
-    /* text-shadow: 0px 0px 1px #000; */
+    text-shadow: 0px 0px 1px rgba(255, 255, 255, .5);
 }
 
 #color_sample {
-    border: 2px solid rgba(255, 255, 255, .25);
+    border: 2px solid rgba(255, 255, 255, .4);
     border-radius: 4px;
     width: 70px;
     height: 70px;
     margin: 15px 0px 15px 0px;
+}
+
+#btn_sort {
+    background-color: #95ffa7;
+    color: #0a1431;
+}
+
+#btn_sort:hover {
+    background-color: #E8BF56;
+    color: #fff;
 }
