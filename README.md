@@ -16,3 +16,5 @@ For future work and bugfixes, see this repo's [issue tracker](https://github.com
 ### Sources
 [HTML5 Zoom and Pan Canvas - CodePen](https://codepen.io/techslides/pen/zowLd)
 [HSL x RGB Color Conversion - Stack Overflow](https://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion)
+
+Gesso is a wrapper for the HTML Canvas and its 2D Context, with the purpose of enabling easy zooming and panning.
