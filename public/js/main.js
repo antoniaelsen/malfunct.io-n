@@ -292,22 +292,26 @@ $("#toggle_mask").on("click", function (e) {
 });
 
 $("#s_sort_criteria").on("change", function (e) {
-  // TODO(aelsen): Dictionary.
   var mode = 2;
+  console.log("On sort criteria change: " + e.target.value);
   switch (e.target.value) {
     case "HUE":
       mode = 0;
+      $("#i_threshold_start").attr({"min" : 0, "max" : 360, "step" : 1});
+      $("#i_threshold_end").attr({"min" : 0, "max" : 360, "step" : 1});
       break;
     case "SATURATION":
       mode = 1;
+      $("#i_threshold_start").attr({"min" : 0, "max" : 1, "step" : 0.05});
+      $("#i_threshold_end").attr({"min" : 0, "max" : 1, "step" : 0.05});
       break;
     case "LUMINOSITY":
       mode = 2;
+      $("#i_threshold_start").attr({"min" : 0, "max" : 1, "step" : 0.05});
+      $("#i_threshold_end").attr({"min" : 0, "max" : 1, "step" : 0.05});
       break;
   }
   op.s_sort_criteria = mode;
-
-  // TODO(aelsen): Change inputs and their bounds as necessary.
 });
 
 stage_editor.canvas.addEventListener('mousedown', function(evt) {
