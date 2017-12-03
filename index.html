@@ -87,9 +87,9 @@
                                     <div class="row m-0">
                                             <p class="label text-left col-5">MODE</p>
                                         <select class="custom-select ctrl col-7" id="s_sort_criteria">
-                                            <option>LUMINOSITY</option>
-                                            <option>HUE</option>
-                                            <option>SATURATION</option>
+                                            <option value=0>HUE</option>
+                                            <option value=1>SATURATION</option>
+                                            <option value=2 selected >LUMINOSITY</option>
                                         </select>
                                     </div>
                                 </li>
@@ -147,26 +147,34 @@
                 
                                 <li class="flex-sm-fill text-center nav-item">
                                     <div class="row m-0">
-                                        <label for="threshold_start" class="col-5 col-form-label label text-left">START</label>
+                                        <label for="threshold_start" class="col-3 col-form-label label text-left">START</label>
                                         <select class="custom-select ctrl col-4" id="s_threshold_start_dir">
                                             <option>ABOVE</option>
                                             <option>BELOW</option>
                                         </select>
-                                        <div class="col-3 pr-0">
-                                            <input type="number" class="custom-form ctrl" id="i_threshold_start" step="0.01" min="0" max="255" placeholder=".8">
-                                        </div>
+                                        <select class="custom-select ctrl col-2" id="s_threshold_start_mode">
+                                            <option value=0>H</option>
+                                            <option value=1>S</option>
+                                            <option value=2 selected>L</option>
+                                        </select>
+                                        <input type="number" class="custom-form ctrl col-3" id="i_threshold_start" step="0.01" min="0" max="255" placeholder=".8">
                                     </div>
                                 </li>
                                 <li class="flex-sm-fill text-center nav-item">
                                     <div class="row m-0">
-                                        <label for="theshold-upper" class="col-5 col-form-label label text-left">END</label>
+                                        <label for="theshold-upper" class="col-3 col-form-label label text-left">END</label>
                                         <select class="custom-select ctrl col-4" id="s_threshold_end_dir">
                                             <option>BELOW</option>
                                             <option>ABOVE</option>
                                         </select>
-                                        <div class="col-3 pr-0">
-                                            <input type="number" class="custom-form ctrl" id="i_threshold_end" step="0.01" min="0" max="255" placeholder=".2">
-                                        </div>
+                                        <select class="custom-select ctrl col-2" id="s_threshold_end_mode">
+                                            <option value=0>H</option>
+                                            <option value=1>S</option>
+                                            <option value=2 selected>L</option>
+                                        </select>
+                                        <!-- <div class="col-4 pr-0"> -->
+                                            <input type="number" class="custom-form ctrl col-3" id="i_threshold_end" step="0.01" min="0" max="255" placeholder=".2">
+                                        <!-- </div> -->
                                     </div>
                                 </li>
                                 <li class="flex-sm-fill text-center nav-item">

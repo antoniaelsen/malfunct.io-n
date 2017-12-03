@@ -6,7 +6,9 @@ var op = {
   s_sort_order: "ASCENDING",
   s_threshold_search_dir: "DOWNWARD",
   s_threshold_start_dir: "ABOVE",
+  s_threshold_start_mode: 2,
   s_threshold_end_dir: "BELOW",
+  s_threshold_end_mode: 2,
   i_threshold_start: 0,
   i_threshold_end: 1
 };
@@ -58,16 +60,24 @@ function findBounds(pixels) {
   }
 
   // Isolate values of the mode (H, S, or L)
-  var mode_slice = line.map(
-    function (v) { return v[op.s_sort_criteria]; });
-
+  var start_line = line.map(
+    function (v) { return v[op.s_threshold_start_mode]; });
+  
+  // Find the first pixel location that meets the threshold
   bounds[0] = findThreshold(
-    mode_slice, op.i_threshold_start, op.s_threshold_start_dir);
-  if (bounds[0] == -1) { return bounds; }
+    start_line, op.i_threshold_start, op.s_threshold_start_dir);
+  if (bounds[0] == -1 || bounds[0] == (line.length - 1)) { return bounds; }
 
-  bounded_slice = mode_slice.slice(bounds[0] + 1, mode_slice.length);
+  // Isolate the remaining portion of the line
+  bounded_line = line.slice(bounds[0] + 1, line.length);
+
+  // Isolate the values of the end mode
+  var end_line = bounded_line.map(
+    function (v) { return v[op.s_threshold_end_mode]; });
+
+  // Find the first pixel location that meets the threshold
   bounds[1] = bounds[0] + findThreshold(
-    bounded_slice, op.i_threshold_end, op.s_threshold_end_dir);
+    end_line, op.i_threshold_end, op.s_threshold_end_dir);
 
   if (op.s_threshold_search_dir == "UPWARD") {
     bounds[0] = line.length - bounds[0];
@@ -99,7 +109,9 @@ function pixelsort() {
   console.log("   s_sort_order: " + op.s_sort_order);
   console.log("   s_threshold_search_dir: " + op.s_threshold_search_dir);
   console.log("   s_threshold_start_dir: " + op.s_threshold_start_dir);
+  console.log("   s_threshold_start_mode: " + op.s_threshold_start_mode);
   console.log("   s_threshold_end_dir: " + op.s_threshold_end_dir);
+  console.log("   s_threshold_end_mode: " + op.s_threshold_end_mode);
   console.log("   i_threshold_start: " + op.i_threshold_start);
   console.log("   i_threshold_end: " + op.i_threshold_end);
   var start = Date.now();
@@ -292,26 +304,16 @@ $("#toggle_mask").on("click", function (e) {
 });
 
 $("#s_sort_criteria").on("change", function (e) {
-  var mode = 2;
   console.log("On sort criteria change: " + e.target.value);
-  switch (e.target.value) {
-    case "HUE":
-      mode = 0;
-      $("#i_threshold_start").attr({"min" : 0, "max" : 360, "step" : 1});
-      $("#i_threshold_end").attr({"min" : 0, "max" : 360, "step" : 1});
-      break;
-    case "SATURATION":
-      mode = 1;
-      $("#i_threshold_start").attr({"min" : 0, "max" : 1, "step" : 0.05});
-      $("#i_threshold_end").attr({"min" : 0, "max" : 1, "step" : 0.05});
-      break;
-    case "LUMINOSITY":
-      mode = 2;
-      $("#i_threshold_start").attr({"min" : 0, "max" : 1, "step" : 0.05});
-      $("#i_threshold_end").attr({"min" : 0, "max" : 1, "step" : 0.05});
-      break;
-  }
-  op.s_sort_criteria = mode;
+  op.s_sort_criteria = e.target.value;
+});
+
+$("#s_threshold_start_mode").on("change", function (e) {
+  op.s_threshold_target_mode = e.target.value;
+});
+
+$("#s_threshold_end_mode").on("change", function (e) {
+  op.s_threshold_end_mode = e.target.value;
 });
 
 stage_editor.canvas.addEventListener('mousedown', function(evt) {
