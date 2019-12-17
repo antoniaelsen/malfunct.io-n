@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": "./src",
     "lib": [
       "es6",
       "dom"
@@ -16,8 +17,8 @@
     "noEmit": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
-    "noUnusedParameters": true,
-    "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+    // "noUnusedLocals": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
@@ -25,5 +26,5 @@
   },
   "include": [
     "src"
-  ]
+  ],
 }

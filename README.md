@@ -114,6 +114,11 @@ Supporting layered effects
 #### Absolute Paths
 
 https://github.com/facebook/create-react-app/issues/5118
+Resolved by updating to CRA ~3.0+
+
+### Material Ui
+https://material-ui.com/guides/typescript/
+https://medium.com/@egctoru/extend-material-ui-theme-in-typescript-a462e207131f
 
 ### React Concurrent Mode
 
