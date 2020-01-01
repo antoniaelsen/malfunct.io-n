@@ -5,6 +5,9 @@ import clsx from 'clsx';
 import './App.css';
 import store from 'store/createStore';
 
+import { DndProvider } from 'react-dnd'
+import Backend from 'react-dnd-html5-backend'
+
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { createStyles, makeStyles, MuiThemeProvider, Theme } from '@material-ui/core/styles';
 
@@ -137,84 +140,86 @@ const App: React.SFC<Props> = (props) => {
 
 
   return (
-    <MuiThemeProvider theme={theme}>
-      <Provider store={store}>
-        <CssBaseline />
+    <DndProvider backend={Backend}>
+      <MuiThemeProvider theme={theme}>
+        <Provider store={store}>
+          <CssBaseline />
 
-        <div className={classes.root}>
-          <Grow in={!open} {...(!open ? { timeout: 1000 } : {})}>
-            <Fab
-              color="primary"
-              aria-label="open menu"
-              onClick={handleDrawerOpen}
-              className={clsx(classes.menuButton, open && classes.hide)}
+          <div className={classes.root}>
+            <Grow in={!open} {...(!open ? { timeout: 1000 } : {})}>
+              <Fab
+                color="primary"
+                aria-label="open menu"
+                onClick={handleDrawerOpen}
+                className={clsx(classes.menuButton, open && classes.hide)}
+              >
+                <MenuIcon />
+              </Fab>
+            </Grow>
+            <Drawer
+              classes={{ paper: classes.drawerPaper }}
+              className={classes.drawer}
+              anchor="left"
+              open={open}
+              variant="persistent"
             >
-              <MenuIcon />
-            </Fab>
-          </Grow>
-          <Drawer
-            classes={{ paper: classes.drawerPaper }}
-            className={classes.drawer}
-            anchor="left"
-            open={open}
-            variant="persistent"
-          >
-            <div className={classes.drawerHeader}>
-              <IconButton color="primary" onClick={handleDrawerClose}>
-                {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-              </IconButton>
-            </div>
-            <Divider />
-            <NavExpansionPanel
-              details={(
-                <Typography>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-                  sit amet blandit leo lobortis eget.
-                </Typography>
-              )}
-              title='Image'
-            />
-            <NavExpansionPanel
-              details={(
-                <Layers>
-                </Layers>
-              )}
-              title='Layers'
-            />
+              <div className={classes.drawerHeader}>
+                <IconButton color="primary" onClick={handleDrawerClose}>
+                  {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                </IconButton>
+              </div>
+              <Divider />
+              <NavExpansionPanel
+                details={(
+                  <Typography>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
+                    sit amet blandit leo lobortis eget.
+                  </Typography>
+                )}
+                title='Image'
+              />
+              <NavExpansionPanel
+                details={(
+                  <Layers>
+                  </Layers>
+                )}
+                title='Layers'
+              />
 
-            
+              
 
-            {/* <List>
-              {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                <ListItem button key={text}>
-                  <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItem>
-              ))}
-            </List> */}
-            {/* <Divider />
-            <List>
-              {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                <ListItem button key={text}>
-                  <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItem>
-              ))}
-            </List> */}
+              {/* <List>
+                {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+                  <ListItem button key={text}>
+                    <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+                    <ListItemText primary={text} />
+                  </ListItem>
+                ))}
+              </List> */}
+              {/* <Divider />
+              <List>
+                {['All mail', 'Trash', 'Spam'].map((text, index) => (
+                  <ListItem button key={text}>
+                    <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+                    <ListItemText primary={text} />
+                  </ListItem>
+                ))}
+              </List> */}
 
-          </Drawer>
+            </Drawer>
 
-          <main
-            className={clsx(classes.content, {
-              [classes.contentShift]: open,
-            })}
-          >
-            <div className={classes.drawerHeader} />
-          </main>
-        </div>
+            <main
+              className={clsx(classes.content, {
+                [classes.contentShift]: open,
+              })}
+            >
+              <div className={classes.drawerHeader} />
+            </main>
+          </div>
 
-      </Provider>
-    </MuiThemeProvider>
+        </Provider>
+      </MuiThemeProvider>
+    </DndProvider>
   );
 }
 

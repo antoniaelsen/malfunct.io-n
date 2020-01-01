@@ -23,7 +23,7 @@ const DragList: React.SFC<DragListProps> = (props) => {
 
   return (
     <List className={classes.root}>
-      {[0, 1, 2, 3].map(value => {
+      {[0, 1, 2].map(value => {
         return (
           <DragListItem key={value} id={value}/>
         );

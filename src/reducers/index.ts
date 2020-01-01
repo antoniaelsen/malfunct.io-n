@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 
-// import somereducer from './somereducer';
+import layer from './layer';
 
 
-export default combineReducers({});
+export default combineReducers({layer});

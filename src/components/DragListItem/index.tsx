@@ -1,6 +1,8 @@
-import {connect, ConnectedProps} from 'react-redux';
+import { Dispatch, AnyAction } from 'redux';
+import { connect, ConnectedProps } from 'react-redux';
+import { updateLayer } from 'actions';
 import { GlobalState } from 'store';
-
+import { Layer } from 'store/layer/types';
 
 import React from 'react';
 
@@ -10,20 +12,25 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import IconButton from '@material-ui/core/IconButton';
+import TextField from '@material-ui/core/TextField';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 
 
-// Redux
+// Container
 
-const mapStateToProps = (state: GlobalState) => {
-  return {};
+const layerSelector = (state: GlobalState, props: ComponentProps) => (state.layer.layers.find(layer => layer.id === props.id));
+const mapStateToProps = (state: GlobalState, props: ComponentProps) => {
+  const layer = layerSelector(state, props);
+  return {
+    ...layer
+  };
 };
 
-const mapDispatchToProps = {
-  toggleVisibility: () => ({ type: 'TOGGLE_VISIBLE' })
-}
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>, props: ComponentProps) => ({
+  update: (data: Partial<Layer>) => (dispatch(updateLayer(props.id, data)))
+});
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 type ReduxProps = ConnectedProps<typeof connector>
@@ -45,17 +52,23 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 
-type DragListItemProps = ReduxProps & {
+type ComponentProps = Partial<Layer> & {
   id: number,
-  label: string,
-  onVisibilityToggle: () => void,
-  visible: boolean
 };
 
-const DragListItem = (props: DragListItemProps) => {
+type Props = ReduxProps & ComponentProps;
+
+const DragListItem = (props: Props) => {
   const classes = useStyles();
-  const { id, label, onVisibilityToggle, visible } = props;
+  const { id, label, update, visible } = props;
   const labelId = `checkbox-list-label-${id}`;
+  const onChangeLabel = React.useCallback((e) => {
+    let label: string = e.target.value;
+    update({ label });
+  }, [update]);
+  const onClickVisibility = React.useCallback((e) => {
+    update({ visible: !visible });
+  }, [update, visible]);
 
   const VisibilityIconOption = visible ? VisibilityIcon : VisibilityOffIcon;
 
@@ -66,14 +79,17 @@ const DragListItem = (props: DragListItemProps) => {
           <DragHandleIcon />
         </IconButton>
       </ListItemIcon>
-      <ListItemText id={labelId} primary={label} />
+      <ListItemText
+        id={labelId}
+        primary={<TextField onChange={onChangeLabel} value={label}/>}
+     />
       <ListItemSecondaryAction>
         <IconButton
           className={classes.icon}
           edge="end"
           aria-label="visibility"
           disableRipple
-          onClick={onVisibilityToggle}
+          onClick={onClickVisibility}
           size="small"
         >
           <VisibilityIconOption fontSize="small" />
@@ -82,15 +98,5 @@ const DragListItem = (props: DragListItemProps) => {
     </ListItem>
   );
 }
-
-// TODO(aelsen): remove
-const defaultProps = {
-  id: 0,
-  label: 'Layer',
-  onVisibilityToggle: () => {},
-  visible: true,
-};
-DragListItem.defaultProps = defaultProps;
-
 
 export default connector(DragListItem);
