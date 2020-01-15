@@ -28,12 +28,12 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 
-export type ComponentProps = Partial<Layer> & {
-  id: number,
-  update: any // TODO(aelsen): get rid of any
+export interface OwnProps extends Partial<Layer> {
+  id: number;
+  update: (layer: Partial<Layer>) => void;
 };
 
-export const DragListItem: React.SFC<ComponentProps> = (props) => {
+export const DragListItem: React.SFC<OwnProps> = (props) => {
   const classes = useStyles();
   const { id, label, update, visible } = props;
   const labelId = `checkbox-list-label-${id}`;
