@@ -1,34 +1,12 @@
-export interface Layer {
-  label: string,
-  opacity: number,
-  visible: boolean
-}
+import { LayerState } from "./layer/types";
+
 
 export interface GlobalState {
-  layers: Layer[],
-  theme: string,
+  // application: ApplicationState,
+  layer: LayerState,
 }
-
 
 export const initialState = {
-  layers: [
-    {
-      label: 'Layer 2',
-      opacity: 100,
-      visible: true,
-    },
-    {
-      label: 'Layer 1',
-      opacity: 100,
-      visible: true,
-    },
-    {
-      label: 'Layer 0',
-      opacity: 100,
-      visible: true,
-    },
-  ],
-  theme: 'dark',
-}
+};
 
 

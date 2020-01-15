@@ -2,7 +2,7 @@ import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 
-import DragListItem from 'components/DragListItem';
+import { DragListItem } from 'components/DragListItem';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,7 +23,7 @@ const DragList: React.SFC<DragListProps> = (props) => {
 
   return (
     <List className={classes.root}>
-      {[0, 1, 2, 3].map(value => {
+      {[0, 1, 2].map(value => {
         return (
           <DragListItem key={value} id={value}/>
         );
