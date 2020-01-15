@@ -3,6 +3,7 @@ import { AnyAction } from 'redux';
 import {
   CREATE_LAYER,
   DESTROY_LAYER,
+  MOVE_LAYER,
   UPDATE_LAYER,
 } from 'actions';
 import { LayerState } from 'store/layer/types';
@@ -12,7 +13,7 @@ export const initialState : LayerState = {
   layers: [
     {
       id: 0,
-      label: 'Layer A',
+      label: 'Layer Alpha',
       opacity: 100,
       visible: true,
     },
@@ -40,6 +41,18 @@ const reducers: {[key: string]: (state: LayerState, data: any) => LayerState} = 
   [DESTROY_LAYER]: (state, action) => {
     const id = action.payload;
     const layers = state.layers.filter(layer => layer.id !== id);
+    return { ...state, layers };
+  },
+
+  [MOVE_LAYER]: (state, action) => {
+    const { id, index } = action.payload;
+    const src = state.layers.findIndex(layer => layer.id === id);
+    const layer = _.cloneDeep(state.layers.find(layer => layer.id === id));
+    if (!layer) return state;
+
+    let layers = _.cloneDeep(state.layers);
+    layers.splice(src, 1);
+    layers.splice(index, 0, layer);
     return { ...state, layers };
   },
 

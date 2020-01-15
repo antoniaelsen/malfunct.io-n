@@ -1,9 +1,9 @@
 import { Dispatch, AnyAction } from 'redux';
-import { connect, ConnectedProps } from 'react-redux';
+import { connect } from 'react-redux';
 import { updateLayer } from 'actions';
 import { GlobalState } from 'store';
 import { Layer } from 'store/layer/types';
-import { DragListItem as Component, OwnProps } from './component';
+import { DragListItem as Component } from './component';
 
 
 const layerSelector = (state: GlobalState, props: ContainerProps) => (state.layer.layers.find(layer => layer.id === props.id));

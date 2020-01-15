@@ -2,6 +2,7 @@ import { Layer } from "store/layer/types";
 
 export const CREATE_LAYER = 'CREATE_LAYER';
 export const DESTROY_LAYER = 'DESTROY_LAYER';
+export const MOVE_LAYER = 'MOVE_LAYER';
 export const UPDATE_LAYER = 'UPDATE_LAYER';
 
 
@@ -34,8 +35,12 @@ export const destroyLayer = (id: number) => ({
   payload: id,
 });
 
+export const moveLayer = (id: number, index: number) => ({
+  type: MOVE_LAYER,
+  payload: {id, index}
+});
+
 export const updateLayer = (id: number, layer: Partial<Layer>) => ({
   type: UPDATE_LAYER,
   payload: { id, layer },
 });
-

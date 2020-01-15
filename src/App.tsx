@@ -9,7 +9,7 @@ import { DndProvider } from 'react-dnd'
 import Backend from 'react-dnd-html5-backend'
 
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { createStyles, makeStyles, MuiThemeProvider, Theme } from '@material-ui/core/styles';
+import {createStyles, makeStyles, MuiThemeProvider, Theme} from '@material-ui/core/styles';
 
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
@@ -24,9 +24,9 @@ import Typography from '@material-ui/core/Typography';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
-import { theme } from 'theme';
+import {theme} from 'theme';
 
-import DragList from 'components/DragList';
+import {DragList} from 'components/DragList';
 import NavExpansionPanel from 'components/NavExpansionPanel';
 
 

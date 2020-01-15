@@ -107,6 +107,32 @@ Supporting layered effects
 - Ever time a layer is updated, all layers above it will be updated, one after another
 - Effects can be applied with 'opacity' (to previous layer)
 
+
+### Draggable layer list with React DnD
+
+https://react-dnd.github.io/react-dnd/about
+At the time of writing, the some of the documentation examples (in Overview) use an old API (the decorator API) instead of the newer hooks API. The [tutorial](https://react-dnd.github.io/react-dnd/examples/tutorial) uses the hook API. The documentation also doesn't include Typescript definitions. 
+
+App HOC to use HTML DnD backent
+'useDrop' hook to make a component a drop "target"
+'useDrag' hook to make a component draggable
+
+The list items are draggable -- but only by their handle. To implement this, the drag handle icon button is assigned the 'drag' ref, while the containing ListItem element is assigned the 'preview' ref, similar to [the React DnD example for drag handles](https://react-dnd.github.io/react-dnd/examples/customize/handles-and-previews).
+Ref is passsed to 'innerRef' prop for material ui components
+
+Choice to store the layer order either by
+- using the order of the indeces in the layer list
+- using an 'index' or 'order' property on each layer object
+
+If I store the order as a property on each layer object, then to move a layer to an index, every layer must be searched for their index value, to determine if it's after the source or target indece; and if it is, they must be moved.
+If I store the order by the ordering of the indeces, I only need to manipulate a small list of scalars.
+
+Concerning history and the ability to undo, and applying layer effects sequentially by order...
+- It would be more efficient to iterate through a list directly rather than search a list of layers for the next layer by index.
+- If the list of layer indeces is in redux, I can easily keep changes logged in history
+
+In order to separate layer objects from their orders (indeces), I can normalize / denormalize with immutable js. Specifically, this lets pass an array of indeces to the list component, rather than a list of Layer objects -- the latter would mean my list component would re-render anytime any property on a layer was updated, while the former means the component only re-renders when a layer is added, removed, or moved.
+
 ### Libraries and Frameworks
 
 ### Typescript
