@@ -1,9 +1,3 @@
-import { Dispatch, AnyAction } from 'redux';
-import { connect, ConnectedProps } from 'react-redux';
-import { updateLayer } from 'actions';
-import { GlobalState } from 'store';
-import { Layer } from 'store/layer/types';
-
 import React from 'react';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -17,26 +11,8 @@ import DragHandleIcon from '@material-ui/icons/DragHandle';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 
+import { Layer } from 'store/layer/types';
 
-// Container
-
-const layerSelector = (state: GlobalState, props: ComponentProps) => (state.layer.layers.find(layer => layer.id === props.id));
-const mapStateToProps = (state: GlobalState, props: ComponentProps) => {
-  const layer = layerSelector(state, props);
-  return {
-    ...layer
-  };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>, props: ComponentProps) => ({
-  update: (data: Partial<Layer>) => (dispatch(updateLayer(props.id, data)))
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-type ReduxProps = ConnectedProps<typeof connector>
-
-
-// Component 
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -52,13 +28,12 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 
-type ComponentProps = Partial<Layer> & {
+export type ComponentProps = Partial<Layer> & {
   id: number,
+  update: any // TODO(aelsen): get rid of any
 };
 
-type Props = ReduxProps & ComponentProps;
-
-const DragListItem = (props: Props) => {
+export const DragListItem: React.SFC<ComponentProps> = (props) => {
   const classes = useStyles();
   const { id, label, update, visible } = props;
   const labelId = `checkbox-list-label-${id}`;
@@ -98,5 +73,3 @@ const DragListItem = (props: Props) => {
     </ListItem>
   );
 }
-
-export default connector(DragListItem);

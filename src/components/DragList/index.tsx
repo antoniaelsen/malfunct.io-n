@@ -2,7 +2,7 @@ import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 
-import DragListItem from 'components/DragListItem';
+import { DragListItem } from 'components/DragListItem';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
