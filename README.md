@@ -43,7 +43,6 @@ Cr: different between the red component and a reference value
 
 ### Pixel Stretching
 
-
 ### Pixel Sorting
 
 #### Sorting by quality
@@ -56,7 +55,11 @@ Show thresholds
 
 Sort [horizontally / vertically / diagonally]
 Sort from [left, top to right, bottom / right, bottom to left, top]
-Start sorting from the [most / least] [bright / saturated / red] pixel and end at the opposite
+START
+- from the [most / least] [bright / saturated / hue] pixel 
+END
+- at the [least / most] [bright / saturated / hue] pixel
+- after x pixels 
 
 
 ### Channel Shifting
@@ -96,6 +99,21 @@ Does what it says on the box. Reflection about mid-value.
 - Decay factor (echo amplitude) (linear)
 - Delay time
 
+### Canvas implementation
+
+#### Options
+
+- Vanilla Canvas
+  - Easy to manipulate pixels
+- ThreeJS
+  - Allows for other effects, post-processing, shaders, etc.
+    - Film grain
+    - Glitch
+    - Halftone
+    - Pixel
+
+
+
 ### Combining Effects and Maintaining History
 
 Supporting layered effects
@@ -107,6 +125,66 @@ Supporting layered effects
 - Ever time a layer is updated, all layers above it will be updated, one after another
 - Effects can be applied with 'opacity' (to previous layer)
 
+### Implementing Layers in the Canvas
+- Singled canvas used, NOT multiple dom elements
+- Using multiple DOM elements
+  - pros:
+    - easier to implement, in terms of written HTML and JS
+    - cons:
+      - saving: can't save all canvasses save to single image without extra combination logic
+      - blending layers: can only easily blend layers via opacity, can't easily blend other ways such as multiply, screen, etc.
+
+### Canvas Sizing
+
+To keep the canvas size congruent with the available space in the window, or not?
+Links
+- http://phrogz.net/tmp/canvas_zoom_to_cursor.html
+
+#### Dynamically Resizing Canvas with Window Dimensions
+Considerations:
+- Every time the window is resized, the canvas will have to be resized
+- Similarly, if a pull-out vertical nav bar is revealed or hidden, then the canvas will have to be resized to accommodate for changing amount of free space
+
+#### Sizing Canvas to Dimensions of Image
+- Canvas could maintain a specific width, height (set by imported image)
+- Zooming could be done within this constrained width, OR
+- Zooming could be done by both resizing canvas and managing image data?
+
+According to the [Mozilla canvas Documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas)
+```
+The displayed size of the canvas can be changed using CSS, but if you do this the image is scaled during rendering to fit the styled size, which can make the final graphics rendering end up being distorted.
+It is better to specify your canvas dimensions by setting the width and height attributes directly on the <canvas> elements, either directly in the HTML or by using JavaScript.
+```
+
+
+### Loading an Image
+
+- maximum filesize must be enforced
+  - dimensions must satisfy max width and height criteria of html canvas
+
+#### Security, Cross-Origin Access and Canvas Tainting
+
+Loading images from another origin without CORS approval (what is cors approval) poses a security risk.
+As such, any canvas with data loaded from an image acquired without proper cors approval is considered tainted.
+Attempting to retrieve (save) an image from a tainted canvas will result in an exception.
+Blocked retrieval methods include
+  - getImageData()
+  - toBlob() (on the tainted <canvas> element)
+  - toDataUrl()
+
+More information
+- Tainted canvas: https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image#What_is_a_.22tainted.22_canvas.3F
+- The crossorigin attribute: https://html.spec.whatwg.org/multipage/#attr-img-crossorigin
+
+
+##### CORS and crossorigin
+
+So what does proper CORS approval look like?
+- Appropriate CORS header
+- Server must be configured with cross-origin access permitted (for images, at least)
+  - `Access-Control-Allow-Origin` must be set
+- Appropriate crossorigin attribute on the image html element
+  - With this attribute, the browser will make the request for cross-origin access when requesting the image source 
 
 ### Draggable layer list with React DnD
 

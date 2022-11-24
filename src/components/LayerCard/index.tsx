@@ -1,36 +1,21 @@
-import React, {useRef} from 'react';
+import React, { useCallback, useRef } from 'react';
 
-import {XYCoord} from 'dnd-core';
-import {DropTargetMonitor, useDrag, useDrop} from 'react-dnd';
-import {DnDTypes} from 'lib/dndTypes';
+import { XYCoord } from 'dnd-core';
+import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
+import { DnDTypes } from 'lib/dndTypes';
 
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction';
+import ListItemText from '@mui/material/ListItemText';
+import IconButton from '@mui/material/IconButton';
+import TextField from '@mui/material/TextField';
 
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
-import IconButton from '@material-ui/core/IconButton';
-import TextField from '@material-ui/core/TextField';
-import DragHandleIcon from '@material-ui/icons/DragHandle';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import DragHandleIcon from '@mui/icons-material/DragHandle';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
-import {Layer} from 'store/layer/types';
-
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: '100%',
-      // maxWidth: 360,
-      // backgroundColor: theme.palette.background.paper,
-    },
-    icon: {
-      margin: theme.spacing(1),
-    },
-  }),
-);
+import { Layer } from 'types/layers';
 
 interface DragItem {
   id: number,
@@ -38,40 +23,43 @@ interface DragItem {
   type: string,
 };
 
-export interface OwnProps extends Partial<Layer> {
+export interface LayerCardProps extends Partial<Layer> {
   id: number;
   index: number,
   move: (id: number, index: number) => void;
-  update: (layer: Partial<Layer>) => void;
+  update: (id: number, layer: Partial<Omit<Layer, "id">>) => void;
 };
 
-export const DragListItem: React.SFC<OwnProps> = (props) => {
+export const LayerCard: React.FC<LayerCardProps> = (props: LayerCardProps) => {
   const { id, index, label, move, update, visible } = props;
-  const classes = useStyles();
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLLIElement>(null);
   const labelId = `checkbox-list-label-${id}`;
-  const onChangeLabel = React.useCallback((e) => {
+
+  const onChangeLabel = useCallback((e: any) => {
     let label: string = e.target.value;
-    update({ label });
-  }, [update]);
-  const onClickVisibility = React.useCallback((e) => {
-    update({ visible: !visible });
-  }, [update, visible]);
+    update(id, { label });
+  }, [id, update]);
+
+  const onClickVisibility = useCallback(() => {
+    update(id, { visible: !visible });
+  }, [id, update, visible]);
 
   const VisibilityIconOption = visible ? VisibilityIcon : VisibilityOffIcon;
 
   // React DnD drag implementation
   const [{isDragging}, drag, preview] = useDrag({
-    item: { id, type: DnDTypes.LAYER },  // Spec, available to drop targets
-    collect: monitor => ({               // Props collected from drag monitor
-      isDragging: monitor.isDragging(),
+    type: DnDTypes.LAYER,               
+    item: { id },
+    collect: monitor => ({
+      isDragging: !!monitor.isDragging(),
     }),
   });
 
   const [, drop] = useDrop({
     accept: DnDTypes.LAYER,
-    hover(item: DragItem, monitor: DropTargetMonitor) {
-      if (!ref.current) return;
+    hover(item: any, monitor: DropTargetMonitor) {
+      console.log(`LayerCard | useDrop item`, item)
+      if (!ref.current || !item) return;
       const dragIndex = item.index
       const hoverIndex = index;
 
@@ -94,30 +82,33 @@ export const DragListItem: React.SFC<OwnProps> = (props) => {
       // to avoid expensive index searches.
       item.index = hoverIndex;
     },
-  })
+  });
+  console.log("LayerCard | ", id, label, visible)
 
   // This component is both a drop target and drag item. However, it is dragged by handle.
   // A child icon button acts as the handle, while the outermost element is only a drag preview,
   // as well as the drop target.
   drop(preview(ref));
   return (
-    <ListItem key={id} innerRef={ref} role={undefined} dense disableGutters={true}>
+    <ListItem key={id} ref={ref} role={undefined} dense disableGutters={true}>
       <ListItemIcon ref={drag}>
-        <IconButton edge="end" aria-label="DragHandle">
+        <IconButton edge="end" aria-label="DragHandle" color="primary">
           <DragHandleIcon />
         </IconButton>
       </ListItemIcon>
       <ListItemText
+        sx={{ ...(!visible && { opacity: "50%" })}}
         id={labelId}
-        primary={<TextField onChange={onChangeLabel} value={label}/>}
+        primary={<TextField onChange={onChangeLabel} value={label} variant="standard"/>}
      />
       <ListItemSecondaryAction>
         <IconButton
-          className={classes.icon}
+          sx={{ m: 1, ...(!visible && { opacity: "50%" })}}
           edge="end"
           aria-label="visibility"
           disableRipple
           onClick={onClickVisibility}
+          color="primary"
           size="small"
         >
           <VisibilityIconOption fontSize="small" />

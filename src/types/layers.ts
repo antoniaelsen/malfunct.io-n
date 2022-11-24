@@ -7,4 +7,5 @@ export interface Layer {
 
 export interface LayerState {
   layers: Layer[],
+  layerIdNext: number,
 }

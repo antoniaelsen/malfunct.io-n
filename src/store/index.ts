@@ -1,4 +1,4 @@
-import { LayerState } from "./layer/types";
+import { LayerState } from "../types/layers";
 
 
 export interface GlobalState {

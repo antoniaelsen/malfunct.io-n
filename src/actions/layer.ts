@@ -1,4 +1,4 @@
-import { Layer } from "store/layer/types";
+import { Layer } from "types/layers";
 
 export const CREATE_LAYER = 'CREATE_LAYER';
 export const DESTROY_LAYER = 'DESTROY_LAYER';

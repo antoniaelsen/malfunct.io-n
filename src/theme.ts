@@ -1,24 +1,8 @@
-import { createMuiTheme } from '@material-ui/core/styles';
-import { cyan, indigo, orange, pink } from '@material-ui/core/colors';
+import { createTheme } from '@mui/material/styles';
+import { orange, pink } from '@mui/material/colors';
 
-// Theming
-// Style guide colors
-
-interface PaletteIntention {
-  light?: string;
-  main: string;
-  dark?: string;
-  contrastText?: string;
-};
-
-const backgroundDark: PaletteIntention = {
-  main: '#0a1431',
-};
-
-
-let muiTheme = createMuiTheme({
+export const theme = createTheme({
   palette: {
-    type: 'dark',
     background: {
       default: '#101010',
       paper: '#0a1431',
@@ -41,6 +25,3 @@ let muiTheme = createMuiTheme({
     ].join(','),
   },
 });
-
-console.log("Theme |", muiTheme);
-export const theme = muiTheme;
