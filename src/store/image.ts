@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
-import produce from 'immer'
-import create from 'zustand'
+import produce from 'immer';
+import create from 'zustand';
 import { devtools, persist } from 'zustand/middleware'
 
 const STORE_KEY = "image-store";

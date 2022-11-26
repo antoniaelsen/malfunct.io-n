@@ -16,36 +16,44 @@ export interface LayerListProps {
 };
 
 export const LayerList: React.FC<LayerListProps> = (props: LayerListProps) => {
-  const [selected, setSelected] = useState<number[]>([]);
   const {
     layers,
     addLayer,
     deleteLayers,
     moveLayer,
+    selectLayers,
     updateLayer
-  } = useLayersStore(({ layers, addLayer, deleteLayers, moveLayer, updateLayer }) => ({ layers, addLayer, deleteLayers, moveLayer, updateLayer }));
+  } = useLayersStore(({ layers, addLayer, deleteLayers, moveLayer, selectLayers, updateLayer }) => ({
+    layers,
+    addLayer,
+    deleteLayers,
+    moveLayer,
+    selectLayers,
+    updateLayer
+  }));
+  const selected = useLayersStore((state) => state.selected);
 
   const handleAdd = useCallback(() => {
     addLayer({ label: "New Layer" });
   }, [addLayer]);
 
   const handleClick = useCallback((e: any, id: number) => {
-    setSelected(selected => {
-      if (!e.shiftKey) {
-        return selected.includes(id) ? [] : [id];
-      }
-      if (selected.includes(id)) {
-        return selected.filter((existing) => existing !== id);
-      }
-      return [...selected, id];
-    });
-  }, []);
+    let toSelect = [];
+    if (!e.shiftKey) {
+      toSelect = selected.includes(id) ? [] : [id];
+    } else if (selected.includes(id)) {
+      toSelect = selected.filter((existing) => existing !== id);
+    } else {
+      toSelect = [...selected, id];
+    }
+    selectLayers(toSelect);
+  }, [selected, selectLayers]);
 
   const handleDelete = useCallback(() => {
     // TODO(antoniae) add confirmation
     deleteLayers(selected);
-    setSelected([]);
-  }, [selected, deleteLayers]);
+    selectLayers([]);
+  }, [selected, deleteLayers, selectLayers]);
   
   const handleVisibility = useCallback(() => {
     const isVisible = layers

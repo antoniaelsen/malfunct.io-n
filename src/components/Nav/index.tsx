@@ -11,6 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import MenuIcon from '@mui/icons-material/Menu';
 
+import { Controls } from 'components/Controls';
 import { LayerList } from 'components/LayerList';
 import NavAccordion from 'components/NavAccordion';
 import { useImagesStore } from 'store/image';
@@ -32,7 +33,7 @@ export const Nav: React.FC<NavProps> = (props: NavProps) => {
     for (const file of files) {
       addImage(await createImageBitmap(file));
     }
-  }, []);
+  }, [addImage]);
 
   const handleDrawerOpen = useCallback(() => {
     setOpen(true);
@@ -89,6 +90,7 @@ export const Nav: React.FC<NavProps> = (props: NavProps) => {
                 component="label"
                 fullWidth={true}
                 variant="contained"
+                sx={{ mb: 1 }}
               >
                 Upload
                 <input
@@ -97,9 +99,24 @@ export const Nav: React.FC<NavProps> = (props: NavProps) => {
                   onChange={handleUpload}
                 />
               </Button>
+              <Button
+                component="label"
+                fullWidth={true}
+                variant="contained"
+                color="secondary"
+                sx={{ mb: 1 }}
+              >
+                {`${true ? "Show" : "Hide"} guides`}
+              </Button>
             </>
           )}
           title='Image'
+        />
+        <NavAccordion
+          details={(
+            <Controls/>
+          )}
+          title='Controls'
         />
         <NavAccordion
           details={(
