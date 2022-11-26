@@ -9,6 +9,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 
 import { Canvas } from 'components/Canvas';
+import { ColorPicker } from 'components/ColorPicker';
 import { Nav } from 'components/Nav';
 import { theme } from 'theme';
 
@@ -46,8 +47,10 @@ const App: React.FC = () => {
             })
           })}
           >
+            <Canvas />
           </Box>
 
+          <ColorPicker sx={{ position: "absolute", zIndex: 100, bottom: 5, right: 5 }}/>
         </Box>
       </ThemeProvider>
     </DndProvider>
