@@ -8,8 +8,9 @@ const STORE_KEY = "layers-store";
 interface LayersState {
   layers: Layer[];
   layersNextId: number;
-  addLayer: (layer: Partial<Omit<Layer, "id">>) => void;
+  addLayer: (layer?: Partial<Omit<Layer, "id">>) => void;
   deleteLayer: (id: number) => void;
+  deleteLayers: (ids: number[]) => void;
   moveLayer: (id: number, index: number) => void;
   updateLayer: (id: number, layer: Partial<Omit<Layer, "id">>) => void;
 }
@@ -20,13 +21,14 @@ const newLayerDefaults = {
   label: ""
 }
 
+// TODO(antoniae): use Immer
 export const useLayersStore = create<LayersState>()(
   devtools(
     persist(
       (set, get) => ({
         layers: [],
         layersNextId: 0,
-        addLayer: (layer) => set((state: LayersState) => ({
+        addLayer: (layer = {}) => set((state: LayersState) => ({
           layersNextId: state.layersNextId + 1,
           layers: [
             ...state.layers, {
@@ -35,7 +37,8 @@ export const useLayersStore = create<LayersState>()(
               id: state.layersNextId
             }
           ]})),
-        deleteLayer: (id) => set({ layers: get().layers.filter((id) => id !== id) }),
+        deleteLayer: (id) => set({ layers: get().layers.filter((layer) => layer.id !== id) }),
+        deleteLayers: (ids) => set((state: LayersState) => ({ layers: state.layers.filter((layer) => !ids.includes(layer.id)) })),
         moveLayer: (id, index) => set((state: LayersState) => {
           console.log(`LayersState | Moving ${id} to index ${index}`);
           const src = state.layers.findIndex((layer) => layer.id === id)

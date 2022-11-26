@@ -1,22 +1,22 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Drawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
 import Fab from '@mui/material/Fab';
 import Grow from '@mui/material/Grow';
 import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import MenuIcon from '@mui/icons-material/Menu';
 
 import { LayerList } from 'components/LayerList';
 import NavAccordion from 'components/NavAccordion';
+import { useImagesStore } from 'store/image';
 
 
-const drawerWidth = 360;
-
+const NAV_WIDTH = 360;
 
 interface NavProps {
   open: boolean,
@@ -25,12 +25,20 @@ interface NavProps {
 
 export const Nav: React.FC<NavProps> = (props: NavProps) => {
   const { open, setOpen } = props;
+  const addImage = useImagesStore(({ addImage }) => addImage);
 
-  const handleDrawerOpen = React.useCallback(() => {
+  const handleUpload = useCallback(async (e: any) => {
+    const files = e.target.files;
+    for (const file of files) {
+      addImage(await createImageBitmap(file));
+    }
+  }, []);
+
+  const handleDrawerOpen = useCallback(() => {
     setOpen(true);
   }, [setOpen]);
 
-  const handleDrawerClose = React.useCallback(() => {
+  const handleDrawerClose = useCallback(() => {
     setOpen(false);
   }, [setOpen]);
 
@@ -52,10 +60,10 @@ export const Nav: React.FC<NavProps> = (props: NavProps) => {
       {/* Nav Drawer */}
       <Drawer
         sx={{
-          width: drawerWidth,
+          width: NAV_WIDTH,
           flexShrink: 0,
           '& .MuiDrawer-paper': {
-            width: drawerWidth,
+            width: NAV_WIDTH,
           },
         }}
         anchor="left"
@@ -76,10 +84,20 @@ export const Nav: React.FC<NavProps> = (props: NavProps) => {
         <Divider />
         <NavAccordion
           details={(
-            <Typography>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-              sit amet blandit leo lobortis eget.
-            </Typography>
+            <>
+              <Button
+                component="label"
+                fullWidth={true}
+                variant="contained"
+              >
+                Upload
+                <input
+                  type="file"
+                  hidden
+                  onChange={handleUpload}
+                />
+              </Button>
+            </>
           )}
           title='Image'
         />

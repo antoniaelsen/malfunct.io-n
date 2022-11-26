@@ -3,6 +3,7 @@ import { orange, pink } from '@mui/material/colors';
 
 export const theme = createTheme({
   palette: {
+    mode: "dark",
     background: {
       default: '#101010',
       paper: '#0a1431',

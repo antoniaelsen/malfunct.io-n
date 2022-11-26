@@ -10,6 +10,8 @@ import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction';
 import ListItemText from '@mui/material/ListItemText';
 import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
+import { lighten } from "@mui/material/styles";
+
 
 import DragHandleIcon from '@mui/icons-material/DragHandle';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -17,21 +19,17 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 import { Layer } from 'types/layers';
 
-interface DragItem {
-  id: number,
-  index: number,
-  type: string,
-};
-
 export interface LayerCardProps extends Partial<Layer> {
   id: number;
-  index: number,
+  index: number;
+  selected: boolean;
   move: (id: number, index: number) => void;
   update: (id: number, layer: Partial<Omit<Layer, "id">>) => void;
+  onClick: (e: any) => void;
 };
 
 export const LayerCard: React.FC<LayerCardProps> = (props: LayerCardProps) => {
-  const { id, index, label, move, update, visible } = props;
+  const { id, index, label, move, selected, update, visible, onClick } = props;
   const ref = useRef<HTMLLIElement>(null);
   const labelId = `checkbox-list-label-${id}`;
 
@@ -58,7 +56,6 @@ export const LayerCard: React.FC<LayerCardProps> = (props: LayerCardProps) => {
   const [, drop] = useDrop({
     accept: DnDTypes.LAYER,
     hover(item: any, monitor: DropTargetMonitor) {
-      console.log(`LayerCard | useDrop item`, item)
       if (!ref.current || !item) return;
       const dragIndex = item.index
       const hoverIndex = index;
@@ -83,14 +80,24 @@ export const LayerCard: React.FC<LayerCardProps> = (props: LayerCardProps) => {
       item.index = hoverIndex;
     },
   });
-  console.log("LayerCard | ", id, label, visible)
 
   // This component is both a drop target and drag item. However, it is dragged by handle.
   // A child icon button acts as the handle, while the outermost element is only a drag preview,
   // as well as the drop target.
   drop(preview(ref));
   return (
-    <ListItem key={id} ref={ref} role={undefined} dense disableGutters={true}>
+    <ListItem
+      key={id}
+      ref={ref}
+      role={undefined}
+      dense
+      disableGutters={true}
+      sx={(theme) => ({
+        borderRadius: 1,
+       ...(selected && { background: lighten(theme.palette.background.paper, 0.1) })
+      })}
+      onClick={onClick}
+    >
       <ListItemIcon ref={drag}>
         <IconButton edge="end" aria-label="DragHandle" color="primary">
           <DragHandleIcon />
@@ -99,7 +106,7 @@ export const LayerCard: React.FC<LayerCardProps> = (props: LayerCardProps) => {
       <ListItemText
         sx={{ ...(!visible && { opacity: "50%" })}}
         id={labelId}
-        primary={<TextField onChange={onChangeLabel} value={label} variant="standard"/>}
+        primary={<TextField onChange={onChangeLabel} value={label} variant="standard" onClick={(e) => e.stopPropagation()}/>}
      />
       <ListItemSecondaryAction>
         <IconButton

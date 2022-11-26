@@ -34,7 +34,9 @@ const NavAccordion: React.FC<NavAccordionProps> = (props) => {
           {title}
         </Typography>
       </AccordionSummary>
-      <AccordionDetails>
+      <AccordionDetails
+        sx={{ '& .MuiAccordionDetails-root': { display: "flex" } }}
+      >
         {details}
       </AccordionDetails>
     </Accordion>
