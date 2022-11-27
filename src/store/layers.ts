@@ -7,6 +7,7 @@ import { Layer } from 'types/layers'
 const STORE_KEY = "layers-store";
 
 interface LayersState {
+  // guide: boolean;
   layers: Layer[];
   layersNextId: number;
   selected: number[];

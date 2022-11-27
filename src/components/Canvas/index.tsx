@@ -1,35 +1,78 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import useMeasure from 'react-use-measure'
-import { Stage, Image as KImage, Layer as KLayer, Star, Text } from 'react-konva';
+import { Stage, Image as KImage, Layer as KLayer } from 'react-konva';
 import Box from '@mui/material/Box';
+
+import type { Filter } from 'lib/filter';
 import { ImagesState, useImagesStore } from 'store/image';
 
 
 // - Resizing to parent https://github.com/konvajs/react-konva/issues/578
 // - Zoom relative to pointer https://konvajs.org/docs/sandbox/Zooming_Relative_To_Pointer.html
 
+// - Hue http://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl/
+// - Luminance and percieved brightness https://stackoverflow.com/a/56678483
+// - TypedArrays and pixel manipulation performance https://hacks.mozilla.org/2011/12/faster-canvas-pixel-manipulation-with-typed-arrays/
+
+// For layer in layers
+//  look for algorithm
+//    - pixel sort
+// 
+
+// TODO(antoniae): konva-react using filters prop (even if empty array) degrades performance, esp during zoom
+
+
 const getPixelData = (stage: any, position: { x: number, y: number}, size = 1) => {
   const offset = Math.floor(size / 2);
   return stage.toCanvas().getContext('2d').getImageData(position.x - offset, position.y - offset, size, size);
 };
 
+// interface GuideProps {
+//   src: ImageData;
+//   x?: number;
+//   y?: number;
+// }
+
+// const Guide = (props: GuideProps) => {
+//   const { src, x = 0, y = 0 } = props;
+//   const ref = useRef<any>();
+
+//   const canvas = useMemo(() => {
+//     if (!src) return null;
+//     const canvas = document.createElement('canvas');
+//     canvas.width = src.width; 
+//     canvas.height = src.height;
+    
+//     const ctx = canvas.getContext('2d');
+//     if (!ctx) return null;
+
+//     return canvas;
+//   }, [src]);
+
+//   useEffect(() => {
+//     if (!canvas) return;
+//     ref.current.cache();
+//   }, [canvas]);
+
+//   if (!canvas) return null;
+
+//   return (
+//     <KImage ref={ref} x={x} y={y} offsetX={src.width / 2} offsetY={src.height / 2} image={canvas} />
+//   );
+// }
+
 interface CanvasImageProps {
   src: ImageBitmap;
   x?: number;
   y?: number;
+  filters?: Filter[];
 }
-
 const CanvasImage = (props: CanvasImageProps) => {
-  const { src, x = 0, y = 0 } = props;
-  // const ox = x;
-  // const oy = y;
-  const ox = x - src.width / 2;
-  const oy = y - src.height / 2;
-  // console.log("Canvas Image | Rendering", src, `to ${x}, ${y} (image's 0, 0 corner will be offset to ${ox}, ${oy})`);
+  const { src, x = 0, y = 0, filters } = props;
+  const ref = useRef<any>();
 
   const canvas = useMemo(() => {
     if (!src) return null;
-    // console.log("Canvas Image | Loading src to canvas", src);
     const canvas = document.createElement('canvas');
     canvas.width = src.width; 
     canvas.height = src.height;
@@ -43,10 +86,17 @@ const CanvasImage = (props: CanvasImageProps) => {
     return canvas;
   }, [src]);
 
+  useEffect(() => {
+    const img = ref.current;
+    if (!canvas || !img) return;
+    img.filters(filters);
+    img.cache();
+  }, [canvas, filters]);
+
   if (!canvas) return null;
 
   return (
-    <KImage x={ox} y={oy} image={canvas} />
+    <KImage ref={ref} x={x} y={y} offsetX={src.width / 2} offsetY={src.height / 2} image={canvas} />
   );
 }
 
@@ -57,8 +107,10 @@ export const Canvas: React.FC<CanvasProps> = (props: CanvasProps) => {
   const ref = useRef<any>(null);
   const [boundsRef, bounds] = useMeasure();
   const [mid, setMid] = useState({ x: 0, y: 0 });
-  const images = useImagesStore((state: ImagesState) => state.images);
+  const { images, filter } = useImagesStore(({ filter, images }: ImagesState) => ({ filter, images }));
   const setColorPicker = useImagesStore((state: ImagesState) => state.setColorPicker);
+
+  const filters: Filter[] = useMemo(() => (filter ? [filter.f] : []), [filter]);
   
   let data = null;
   if (ref.current) {
@@ -68,18 +120,17 @@ export const Canvas: React.FC<CanvasProps> = (props: CanvasProps) => {
       data = ref.current?.bufferCanvas._canvas.getContext('2d').getImageData(0, 0, cw, ch)
     };
   }
-  console.log(`Canvas | Rendering, with canvas (parent) dimensions ${bounds.width} x ${bounds.height}, midpoint ${mid.x} x ${mid.y}, with images`,
-    images,
-    "stage",
-    ref.current,
-    "width:", ref.current?.width(),
-    "scale:", ref.current?.scale(),
-    ref.current?.bufferCanvas,
-    data,
-  );
+  // console.log(`Canvas | Rendering, with canvas (parent) dimensions ${bounds.width} x ${bounds.height}, midpoint ${mid.x} x ${mid.y}, with images`,
+  //   images,
+  //   "stage",
+  //   ref.current,
+  //   "width:", ref.current?.width(),
+  //   "scale:", ref.current?.scale(),
+  //   ref.current?.bufferCanvas,
+  //   data,
+  // );
 
   const zoom = useCallback((stage: any, target: number) => {
-    // console.log("Canvas | - zoom to", target);
     
     const w = stage.width();
     const h = stage.height();
@@ -115,7 +166,6 @@ export const Canvas: React.FC<CanvasProps> = (props: CanvasProps) => {
     const SCALE_FACTOR = 1.05;
     const current = stage.scaleX();
     const target = direction > 0 ? current * SCALE_FACTOR : current / SCALE_FACTOR;
-    // console.log("Canvas | - zoom", direction ? "out" : "in", "to", target);
     
     zoom(stage, target);
   }, [zoom]);
@@ -138,7 +188,7 @@ export const Canvas: React.FC<CanvasProps> = (props: CanvasProps) => {
     const stage = ref.current;
     if (!stage) return;
 
-    let direction = e.evt.deltaY > 0 ? 1 : -1;
+    let direction = e.evt.deltaY > 0 ? -1 : 1;
     if (e.evt.ctrlKey) {
       direction = -direction;
     }
@@ -190,29 +240,9 @@ export const Canvas: React.FC<CanvasProps> = (props: CanvasProps) => {
     >
       <Stage ref={ref} width={bounds.width} height={bounds.height} onWheel={handleWheel} onMouseMove={handleMouseMove}>
         <KLayer>
-          {/* {INITIAL_STATE.map((star) => (
-            <Star
-              key={star.id}
-              id={star.id}
-              x={star.x}
-              y={star.y}
-              numPoints={5}
-              innerRadius={20}
-              outerRadius={40}
-              fill="#89b717"
-              opacity={0.8}
-              rotation={star.rotation}
-              shadowColor="black"
-              shadowBlur={10}
-              shadowOpacity={0.6}
-              shadowOffsetX={star.isDragging ? 10 : 5}
-              shadowOffsetY={star.isDragging ? 10 : 5}
-              scaleX={star.isDragging ? 1.2 : 1}
-              scaleY={star.isDragging ? 1.2 : 1}
-            />
-          ))} */}
-
-          {images.length > 0 && <CanvasImage src={images[0].src} x={mid.x} y={mid.y}/>}
+          {images.length > 0 && (
+            <CanvasImage src={images[0].src} x={mid.x} y={mid.y} filters={filters}/>
+          )}
         </KLayer>
       </Stage>
     </Box>
