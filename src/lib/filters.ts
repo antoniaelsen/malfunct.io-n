@@ -1,4 +1,4 @@
-import { pixel, rgbaToBlue, rgbaToGreen, rgbaToLuminosity, rgbaToRed } from "./image";
+import { pixel, rgbaToBlue, rgbaToGreen, rgbaToHue, rgbaToLuminosity, rgbaToRed, rgbaToSaturation } from "./image";
 import type { Pixel } from "./image";
 
 export type Filter = (src: ImageData) => void;
@@ -30,6 +30,8 @@ export type FilterMap = { [key: string]: Filter };
 export const filters: FilterMap = {
   "b": filterFactory(rgbaToBlue),
   "g": filterFactory(rgbaToGreen),
+  "h": filterFactory(rgbaToHue),
   "l": filterFactory(rgbaToLuminosity),
   "r": filterFactory(rgbaToRed),
+  "s": filterFactory(rgbaToSaturation),
 };
