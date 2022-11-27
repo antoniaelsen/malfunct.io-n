@@ -1,10 +1,12 @@
-import { cloneDeep } from 'lodash';
 import produce from 'immer';
 import create from 'zustand';
-import { devtools, persist } from 'zustand/middleware'
+import { devtools, persist } from 'zustand/middleware';
+import { filters, FilterMap } from 'lib/filters';
 
 const STORE_KEY = "image-store";
 
+
+type FilterKey = keyof FilterMap;
 export interface MImage {
   id: number;
   src: ImageBitmap;
@@ -12,12 +14,13 @@ export interface MImage {
 
 export interface ImagesState {
   colorPicker: ImageData | null;
-  src: any;
+  filter: { key: FilterKey, f: any } | null;
   images: MImage[];
   imagesNextId: number;
   addImage: (image: ImageBitmap) => void;
   deleteImage: (id: number) => void;
   setColorPicker: (src: ImageData | null) => void;
+  setFilter: (key: FilterKey | null) => void;
 }
 
 
@@ -31,8 +34,8 @@ export const useImagesStore = create<ImagesState>()(
       return {
         images: [],
         imagesNextId: 0,
-        src: null,
         colorPicker: null,
+        filter: null,
 
         // addImage: (src: ImageBitmap) => set(produce((state: ImagesState) => {
         //     state.imagesNextId += 1;
@@ -55,6 +58,10 @@ export const useImagesStore = create<ImagesState>()(
       
         setColorPicker: (src: ImageData | null) => mutator((state: ImagesState) => {
           state.colorPicker = src;
+        }),
+      
+        setFilter: (key: FilterKey | null) => mutator((state: ImagesState) => {
+          state.filter = key && key in filters ? { key, f: filters[key] } : null;
         }),
       };
     },
