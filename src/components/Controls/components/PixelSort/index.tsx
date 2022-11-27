@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React from "react";
 import {
   Box,
   FormControl,
@@ -9,6 +9,8 @@ import {
 import { ControlSelect } from "components/ControlSelect";
 import { PixelSortScanConfig, PixelSortDirection, PixelSortOperator, PixelSortProperty } from "types/layers";
 
+
+// TODO(antoniae): validate sort and scan direction must be on same axis
 
 export interface PropertyOperatorControlProps {
   config: PixelSortScanConfig;
@@ -76,8 +78,6 @@ export interface PixelSortProps {
 export const PixelSort = (props: PixelSortProps) => {
   const { config = {}, onChange } = props;
 
-  console.log("PixelSort Controls | ", config);
-
   const handlePropertyOperatorChange = (configKey: string) => (key: string, value: string | null) => {
     onChange([configKey, key].join("."), value);
   }
@@ -108,7 +108,6 @@ export const PixelSort = (props: PixelSortProps) => {
         onChange={handlePropertyOperatorChange("end")}
         config={config.end || {}}
       />
-      
     </Box>
   );
 }

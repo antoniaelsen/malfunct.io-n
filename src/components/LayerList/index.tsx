@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
@@ -78,7 +78,8 @@ export const LayerList: React.FC<LayerListProps> = (props: LayerListProps) => {
       </Box>
 
       <List sx={{ width: "100%" }}>
-        {layers.map((layer: Layer, i: number) => {
+        {layers.slice().reverse().map((layer: Layer, ri: number) => {
+          const i = layers.length - ri - 1;
           return (
             <LayerCard
               key={layer.id}

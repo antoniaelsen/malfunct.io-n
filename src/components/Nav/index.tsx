@@ -99,30 +99,21 @@ export const Nav: React.FC<NavProps> = (props: NavProps) => {
                   onChange={handleUpload}
                 />
               </Button>
-              <Button
-                component="label"
-                fullWidth={true}
-                variant="contained"
-                color="secondary"
-                sx={{ mb: 1 }}
-              >
-                {`${true ? "Show" : "Hide"} guides`}
-              </Button>
             </>
           )}
           title='Image'
         />
         <NavAccordion
           details={(
-            <Controls/>
-          )}
-          title='Controls'
-        />
-        <NavAccordion
-          details={(
             <LayerList/>
           )}
           title='Layers'
+        />
+        <NavAccordion
+          details={(
+            <Controls/>
+          )}
+          title='Controls'
         />
       </Drawer>
     </Box>
