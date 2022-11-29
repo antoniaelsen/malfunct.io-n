@@ -2,6 +2,7 @@ import produce from 'immer';
 import create from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import { filters, FilterMap } from 'lib/filters';
+import { Filter } from '../lib/filters';
 
 const STORE_KEY = "image-store";
 
@@ -14,7 +15,8 @@ export interface MImage {
 
 export interface ImagesState {
   colorPicker: ImageData | null;
-  filter: { key: FilterKey, f: any } | null;
+  filter: { key: FilterKey, f: Filter } | null;
+  src: ImageBitmap | null;
   images: MImage[];
   imagesNextId: number;
   addImage: (image: ImageBitmap) => void;
@@ -32,6 +34,7 @@ export const useImagesStore = create<ImagesState>()(
       const mutator = (cb: ((state: ImagesState) => void)) => set(produce(cb));
 
       return {
+        src: null,
         images: [],
         imagesNextId: 0,
         colorPicker: null,
@@ -50,7 +53,9 @@ export const useImagesStore = create<ImagesState>()(
             id: state.imagesNextId,
             src,
           }];
+          state.src = src;
         }),
+
         deleteImage: (id: number) => mutator((state: ImagesState) => {
           const index = state.images.findIndex((image) => image.id === id);
           state.images.splice(index, 1);

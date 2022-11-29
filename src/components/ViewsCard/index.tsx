@@ -19,7 +19,7 @@ export const ViewsCard = (props: ViewsCardProps) => {
 
   const handleFilter = (e: any) => {
     const value = e.target.value;
-    if (value === filter) {
+    if (value === filter?.key) {
       setFilter(null);
       return;
     }
